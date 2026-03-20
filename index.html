@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blood Bowl 2025 — Skills & Traits Reference</title>
+<link rel="icon" type="image/jpeg" href="sevcav-bb-logo.jpg">
+<link rel="apple-touch-icon" href="sevcav-bb-logo.jpg">
+<link rel="icon" type="image/jpeg" href="https://sevcav.github.io/Sevcav.github.io/sevcav-bb-logo.jpg">
+<link rel="apple-touch-icon" href="https://sevcav.github.io/Sevcav.github.io/sevcav-bb-logo.jpg">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=Oswald:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap');
+
+  /* ── DESIGN TOKENS — matching BloodBowl-Pitch-Tactics aesthetic ── */
+  :root {
+    --bg-base:       #0d1f07;   /* near-black military green — page background */
+    --bg-surface:    #111c0a;   /* slightly lighter, card base */
+    --bg-card:       #162610;   /* card body background */
+    --bg-header:     #0a1505;   /* sticky header */
+    --bg-controls:   #0f1c08;   /* filter bar */
+    --bg-inset:      #0c1807;   /* rules text inset block */
+
+    --gold:          #d4a93a;   /* primary amber/gold accent */
+    --gold-bright:   #f0c84a;   /* bright gold for headings */
+    --gold-dim:      #8a6e1e;   /* dimmed gold for borders */
+    --gold-glow:     rgba(212,169,58,0.18);
+
+    --green-line:    #1e3d12;   /* subtle green dividers */
+    --green-mid:     #2a5518;   /* medium green for pitch stripe */
+
+    --text-primary:  #e8e0cc;   /* off-white parchment text */
+    --text-secondary:#a89870;   /* muted amber-tan */
+    --text-dim:      #5a5040;   /* very muted */
+
+    --red-accent:    #c0351a;   /* danger/casualty */
+    --red-dim:       #6a1e0e;
+
+    /* category colours — vivid but muted to suit dark theme */
+    --cat-ag:   #2080b0;
+    --cat-dev:  #902090;
+    --cat-gen:  #1e8a2e;
+    --cat-mut:  #b05010;
+    --cat-pas:  #1860a0;
+    --cat-str:  #a02020;
+    --cat-trait:#3838a0;
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-card: 0 2px 16px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,169,58,0.12);
+    --shadow-modal: 0 8px 48px rgba(0,0,0,0.85), 0 0 0 2px var(--gold-dim);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-base);
+    /* subtle pitch grid texture matching the pitch app */
+    background-image:
+      linear-gradient(rgba(30,61,18,0.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,61,18,0.15) 1px, transparent 1px);
+    background-size: 40px 40px;
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 15px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--bg-header);
+    border-bottom: 2px solid var(--gold-dim);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.7);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid var(--green-line);
+  }
+
+  header h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #e8b830 0%, #c9842a 45%, #d4a030 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.9));
+  }
+
+  .header-sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 5px 20px 6px;
+    background: rgba(0,0,0,0.2);
+  }
+
+  .header-sub a {
+    color: var(--gold-dim);
+    text-decoration: none;
+  }
+
+  /* ── CONTROLS BAR ── */
+  .controls {
+    background: var(--bg-controls);
+    padding: 10px 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    border-bottom: 1px solid var(--green-line);
+    position: sticky;
+    top: 83px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  }
+
+  .search-box {
+    flex: 1;
+    min-width: 180px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--gold-dim);
+    border-radius: var(--radius-sm);
+    padding: 7px 14px;
+    color: var(--text-primary);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    letter-spacing: 0.5px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .search-box::placeholder { color: var(--text-dim); }
+  .search-box:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px var(--gold-glow);
+  }
+
+  .cat-btns { display: flex; gap: 5px; flex-wrap: wrap; }
+
+  .cat-btn {
+    padding: 5px 11px;
+    border-radius: var(--radius-sm);
+    border: 1px solid;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    background: transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cat-btn:hover { brightness: 1.1; }
+  .cat-btn.active { color: #fff !important; }
+
+  .btn-all   { border-color: var(--gold-dim);  color: var(--gold); }
+  .btn-all.active  { background: var(--gold);      color: #000 !important; border-color: var(--gold); }
+  .btn-ag    { border-color: #1a5878; color: #4aa8d8; }
+  .btn-ag.active   { background: var(--cat-ag);   border-color: var(--cat-ag); }
+  .btn-dev   { border-color: #601460; color: #c060c0; }
+  .btn-dev.active  { background: var(--cat-dev);  border-color: var(--cat-dev); }
+  .btn-gen   { border-color: #145a1e; color: #40c050; }
+  .btn-gen.active  { background: var(--cat-gen);  border-color: var(--cat-gen); }
+  .btn-mut   { border-color: #6a300a; color: #e07830; }
+  .btn-mut.active  { background: var(--cat-mut);  border-color: var(--cat-mut); }
+  .btn-pas   { border-color: #103858; color: #3880c8; }
+  .btn-pas.active  { background: var(--cat-pas);  border-color: var(--cat-pas); }
+  .btn-str   { border-color: #601010; color: #d84040; }
+  .btn-str.active  { background: var(--cat-str);  border-color: var(--cat-str); }
+  .btn-trait { border-color: #202060; color: #8080d8; }
+  .btn-trait.active{ background: var(--cat-trait); border-color: var(--cat-trait); }
+
+  /* ── COUNT BAR ── */
+  .count-bar {
+    background: rgba(0,0,0,0.4);
+    color: var(--text-dim);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 5px 16px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--green-line);
+  }
+
+  /* ── CARD GRID ── */
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 12px;
+  }
+
+  /* ── SKILL CARD ── */
+  .skill-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    border: 1px solid var(--green-line);
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
+    position: relative;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold-dim);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .skill-card:hover {
+    border-color: var(--gold-dim);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.7), 0 0 0 1px var(--gold-dim);
+    transform: translateY(-2px);
+  }
+  .skill-card:hover::before { opacity: 1; }
+  .skill-card:active { transform: scale(0.98); }
+  .skill-card.hidden { display: none; }
+
+  /* ── CARD HEADER ── */
+  .card-header {
+    padding: 11px 14px 9px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    border-bottom: 1px solid var(--green-line);
+    position: relative;
+  }
+
+  /* left accent bar coloured by category */
+  .card-header::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: var(--radius-md) 0 0 0;
+  }
+
+  .card-header-left { flex: 1; padding-left: 8px; }
+
+  .skill-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--gold-bright);
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-shadow: 0 0 12px rgba(212,169,58,0.25);
+  }
+
+  .skill-meta {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    color: #fff;
+    border: 1px solid transparent;
+  }
+
+  .badge-ag    { background: rgba(32,128,176,0.3);  border-color: #1a5878; color: #6ac8f0; }
+  .badge-dev   { background: rgba(144,32,144,0.3);  border-color: #601460; color: #d080d0; }
+  .badge-gen   { background: rgba(30,138,46,0.3);   border-color: #145a1e; color: #50d060; }
+  .badge-mut   { background: rgba(176,80,16,0.3);   border-color: #6a300a; color: #e09050; }
+  .badge-pas   { background: rgba(24,96,160,0.3);   border-color: #103858; color: #60a0e0; }
+  .badge-str   { background: rgba(160,32,32,0.3);   border-color: #601010; color: #e06060; }
+  .badge-trait { background: rgba(56,56,160,0.3);   border-color: #202060; color: #9090e0; }
+  .badge-passive   { background: rgba(60,60,60,0.4); border-color: #333; color: #aaa; }
+  .badge-active    { background: rgba(40,80,40,0.4); border-color: #204020; color: #80b080; }
+  .badge-compulsory{ background: rgba(192,53,26,0.4);border-color: var(--red-dim); color: #ff8070; }
+
+  /* ── CARD BODY ── */
+  .card-body {
+    padding: 10px 14px 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .section-label {
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--green-line);
+  }
+
+  .rules-text {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    background: var(--bg-inset);
+    border-left: 2px solid var(--gold-dim);
+    padding: 7px 10px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-style: italic;
+  }
+
+  .analysis-body {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text-primary);
+    font-weight: 400;
+  }
+
+  /* ── INTERACTION CHIPS ── */
+  .interactions { margin-top: 2px; }
+  .interaction-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+
+  .chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    font-weight: 700;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.5px;
+    display: inline-block;
+  }
+  .chip-beats   { background: rgba(30,100,30,0.35);  color: #70d070; border: 1px solid #204020; }
+  .chip-beaten  { background: rgba(140,30,20,0.35);  color: #ff8070; border: 1px solid #601010; }
+  .chip-synergy { background: rgba(20,60,130,0.35);  color: #80b0f0; border: 1px solid #102050; }
+  .chip-label   { font-weight: 400; color: var(--text-dim); font-family: 'Rajdhani', sans-serif; font-size: 10px; }
+
+  /* ── TAP HINT ── */
+  .tap-hint {
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    text-align: right;
+    padding: 2px 0 0;
+    text-transform: uppercase;
+  }
+
+  /* ── NO RESULTS ── */
+  .no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-dim);
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 60px 20px;
+    display: none;
+  }
+
+  /* ── CATEGORY HEADER ACCENT COLOURS ── */
+  .hdr-ag::before   { background: var(--cat-ag); }
+  .hdr-dev::before  { background: var(--cat-dev); }
+  .hdr-gen::before  { background: var(--cat-gen); }
+  .hdr-mut::before  { background: var(--cat-mut); }
+  .hdr-pas::before  { background: var(--cat-pas); }
+  .hdr-str::before  { background: var(--cat-str); }
+  .hdr-trait::before{ background: var(--cat-trait); }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(5,12,2,0.95);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* same grid texture as body */
+    background-image:
+      linear-gradient(rgba(5,12,2,0.97) 0%, rgba(5,12,2,0.97) 100%),
+      linear-gradient(rgba(30,61,18,0.2) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,61,18,0.2) 1px, transparent 1px);
+    background-size: cover, 40px 40px, 40px 40px;
+  }
+  .modal-overlay.open { display: block; }
+
+  .modal-inner {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 12px 48px;
+  }
+
+  /* ── MODAL BACK BAR ── */
+  .modal-back-bar {
+    width: 100%;
+    max-width: 740px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .back-btn:hover {
+    background: var(--gold-glow);
+    border-color: var(--gold);
+    color: var(--gold-bright);
+  }
+  .back-btn:active { transform: scale(0.97); }
+
+  .back-btn-arrow { font-size: 16px; line-height: 1; }
+
+  .modal-skill-count {
+    color: var(--text-dim);
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-left: auto;
+  }
+
+  /* ── MODAL CARD ── */
+  .modal-card {
+    width: 100%;
+    max-width: 740px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-modal);
+    border: 1px solid var(--gold-dim);
+    animation: modalPop 0.18s ease-out;
+  }
+
+  @keyframes modalPop {
+    from { opacity: 0; transform: scale(0.96) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-card .card-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--green-line);
+  }
+
+  .modal-card .skill-name {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  .modal-card .skill-meta { margin-top: 10px; }
+
+  .modal-card .badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    letter-spacing: 1px;
+  }
+
+  .modal-card .card-body {
+    padding: 16px 20px 20px;
+    gap: 16px;
+  }
+
+  .modal-card .section-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .modal-card .rules-text {
+    font-size: 14px;
+    line-height: 1.65;
+    padding: 12px 14px;
+    border-left-width: 3px;
+  }
+
+  .modal-card .analysis-body {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-primary);
+  }
+
+  .modal-card .chip {
+    font-size: 12px;
+    padding: 4px 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .modal-card .interaction-chips {
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  /* ── MODAL NAV BUTTONS ── */
+  .modal-nav {
+    width: 100%;
+    max-width: 740px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 14px;
+    gap: 10px;
+  }
+
+  .nav-btn {
+    flex: 1;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s, border-color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .nav-btn:hover  { background: var(--gold-glow); border-color: var(--gold); color: var(--gold-bright); }
+  .nav-btn:active { background: rgba(212,169,58,0.25); }
+  .nav-btn:disabled { opacity: 0.2; cursor: default; }
+  .nav-btn.nav-prev { text-align: left; }
+  .nav-btn.nav-next { text-align: right; }
+
+  .h1-oo {
+    letter-spacing: -6px;
+    /* inherit the same gradient as h1 */
+    background: linear-gradient(180deg, #e8b830 0%, #c9842a 45%, #d4a030 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  @media (max-width: 640px) {
+    header h1    { font-size: 20px; letter-spacing: 3px; }
+    .controls    { top: 75px; padding: 8px 12px; gap: 8px; }
+    .container   { grid-template-columns: 1fr; padding: 10px; gap: 10px; }
+    .modal-card .skill-name   { font-size: 22px; }
+    .modal-card .rules-text   { font-size: 13px; }
+    .modal-card .analysis-body{ font-size: 14px; }
+    .back-btn    { font-size: 12px; padding: 8px 14px; }
+    .nav-btn     { font-size: 11px; padding: 9px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="text-align:left;padding:6px 0 0 0;">
+    <a href="https://sevcav.github.io/Sevcav.github.io/" style="
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:0.72rem;font-weight:700;letter-spacing:0.15em;
+      text-transform:uppercase;color:var(--muted);
+      border:1px solid var(--border);padding:4px 12px;
+      border-radius:3px;text-decoration:none;
+      transition:all 0.2s;display:inline-block;
+    " onmouseover="this.style.color='var(--gold)';this.style.borderColor='var(--gold)';"
+       onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)';">
+      ← Hub
+    </a>
+  </div>
+  <div class="header-inner">
+    <h1>Bl<span class="h1-oo">oo</span>d Bowl 2025 — Skills &amp; Traits</h1>
+  </div>
+  <div class="header-sub">
+    Third Season Edition &nbsp;·&nbsp; Rules source: <a href="https://bloodbowlbase.ru/bb2025/core_rules/skills_and_traits/" target="_blank">bloodbowlbase.ru</a> &nbsp;·&nbsp; Analysis is tactical commentary
+  </div>
+  </div>
+</header>
+
+<div class="controls">
+  <input class="search-box" type="text" id="searchBox" placeholder="Search skills, interactions, keywords...">
+  <div class="cat-btns">
+    <button class="cat-btn btn-all active" onclick="filterCat('all',this)">All</button>
+    <button class="cat-btn btn-ag"    onclick="filterCat('ag',this)">Agility</button>
+    <button class="cat-btn btn-dev"   onclick="filterCat('dev',this)">Devious</button>
+    <button class="cat-btn btn-gen"   onclick="filterCat('gen',this)">General</button>
+    <button class="cat-btn btn-mut"   onclick="filterCat('mut',this)">Mutation</button>
+    <button class="cat-btn btn-pas"   onclick="filterCat('pas',this)">Passing</button>
+    <button class="cat-btn btn-str"   onclick="filterCat('str',this)">Strength</button>
+    <button class="cat-btn btn-trait" onclick="filterCat('trait',this)">Traits</button>
+  </div>
+</div>
+
+<div class="count-bar" id="countBar">Loading…</div>
+
+<div class="container" id="cardContainer"></div>
+<div class="no-results" id="noResults">No skills match your search.</div>
+
+<!-- MODAL OVERLAY -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+  <div class="modal-inner">
+    <div class="modal-back-bar">
+      <button class="back-btn" id="backBtn" onclick="closeModal()">
+        <span class="back-btn-arrow">&#8592;</span> Back to skills
+      </button>
+      <span class="modal-skill-count" id="modalSkillCount"></span>
+    </div>
+    <div class="modal-card" id="modalCard"></div>
+    <div class="modal-nav">
+      <button class="nav-btn nav-prev" id="navPrev" onclick="navigateModal(-1)">&#8592; Previous</button>
+      <button class="nav-btn nav-next" id="navNext" onclick="navigateModal(1)">Next &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SKILLS = [
+// ── AGILITY ──────────────────────────────────────────────────────────────
+{
+  name:"Catch", cat:"ag", type:"active",
+  rules:"This player may re-roll any failed Agility Test when attempting to Catch the ball.",
+  analysis:"The catch re-roll is one of the most reliable safety nets in the game. It fires on every failed catch — passes, hand-offs, and kick-offs. Because a turnover from a failed catch can be catastrophic, Catch essentially converts your receiver from a ball risk into a dependable target. Essential on dedicated ball-catchers, especially those operating under marking pressure.",
+  beats:["Disturbing Presence (partially)","Poor Agility roll luck"],
+  beaten:["Diving Tackle (the -2 mod hits the re-roll too)","Tentacles (stops the player reaching the ball)"],
+  synergy:["Pass","Accurate","Diving Catch"]
+},
+{
+  name:"Diving Catch", cat:"ag", type:"active",
+  rules:"This player may attempt to Catch the ball if it lands in a square in their Tackle Zone as a result of a Pass, Throw-in or Kick-off. They may not use this Skill to attempt to Catch the ball if it lands in a square in their Tackle Zone as a result of a Bounce. Additionally, this player may apply a +1 modifier to their Agility Test when attempting to Catch the ball as part of a Pass Action if they are in the target square.",
+  analysis:"Diving Catch has two functions. The +1 modifier in the target square is modest but meaningful — it makes a 3+ catch into a 2+. The ability to grab balls landing in your Tackle Zone from passes and kick-offs creates surprise coverage opportunities. Note it does NOT work on bounces, so it won't save a bobbled ball rolling your way.",
+  beats:["Inaccurate passes that still land nearby","Wide kick-offs that bounce into range"],
+  beaten:["Ball landing outside Tackle Zone entirely","Bounce results (explicitly excluded)"],
+  synergy:["Catch","On the Ball","Nerves of Steel"]
+},
+{
+  name:"Diving Tackle", cat:"ag", type:"active",
+  rules:"When an opposition player attempts to leave this player's Tackle Zone as a result of a Dodge, Leap or Jump, and an Agility test has been rolled and any modifiers and re-rolls have been applied, this player may use this Skill. Immediately apply a -2 modifier to the opposition player's Agility Test and place this player Prone in the square the opposition player vacated. If a player tries to leave the Tackle Zone of multiple players with this Skill at the same time, only one of those players may use this Skill.",
+  analysis:"A brutal clutch skill — it fires AFTER all re-rolls are spent, making it almost always lethal. A -2 to an already-rolled Agility test usually means the opposing player is going down. However, you become Prone in the vacated square, so use it only when the dodge matters (e.g. ball carrier escaping, or critical defender running through). Devastating on Blodge players if you're using Tackle alongside it.",
+  beats:["Dodge (fires after the re-roll)","Leap / Jump (all three trigger it)","High-AG dodgers who think they're safe"],
+  beaten:["Stand Firm (player can't leave, so no dodge to trigger it)","Two Heads + high AG (could still pass the modified roll)"],
+  synergy:["Tackle","Prehensile Tail","Shadowing"]
+},
+{
+  name:"Dodge", cat:"ag", type:"active",
+  rules:"Once per Turn, this player may re-roll a single Agility Test when attempting to Dodge. Additionally, this Skill will impact the Stumble result when an opposition player performs a Block Action against this player, as described on the Stumble rule.",
+  analysis:"Dodge is arguably the best single skill in the game. It gives one free re-roll per activation AND turns a Stumble result on the block dice into a Push Back rather than a knock-down — effectively neutering opponents who rely on Stumble dice. Every piece that dodges regularly wants this. Combined with Block it creates the legendary 'Blodge' combination that is the gold standard of ball-carrier protection.",
+  beats:["Stumble results on block dice","Single-fail dodge chains"],
+  beaten:["Tackle (removes the Stumble protection AND stops Dodge re-roll on dodges)","Diving Tackle (fires after the re-roll is used)"],
+  synergy:["Block (Blodge combo)","Sprint / Sure Feet","Two Heads"]
+},
+{
+  name:"Defensive", cat:"ag", type:"active",
+  rules:"During your opponent's Turns, opposition players Marked by this player cannot use the Guard or Put the Boot In Skills.",
+  analysis:"Defensive is an anti-Guard tech skill. Guard is the single most important strength skill in the game — it creates free assists for free. A player with Defensive sitting next to a key Guard piece shuts them down completely. On defence, place your Defensive player adjacent to the opponent's best Guard piece to neutralise their entire blocking chain. Also stops Put the Boot In from assisting fouls — handy when your opponent is fouling aggressively.",
+  beats:["Guard (completely cancels it while Marked)","Put the Boot In (cancels foul assists)"],
+  beaten:["Guard players moving out of range before blocking","Opponent avoiding marking the Defensive player"],
+  synergy:["Stand Firm","Guard (mirror denial)","Tackle"]
+},
+{
+  name:"Hit and Run", cat:"ag", type:"active",
+  rules:"When a player with this Skill performs a Block Action or a Stab Special Action, after fully resolving the Action, they may immediately move one free square ignoring Tackle Zones, so long as they are still Standing. The player must ensure that after this free move they are not Marked by or Marking any opposition players. A player with this Skill cannot also have the Frenzy Skill.",
+  analysis:"Hit and Run gives a free square of movement after a block — ignoring tackle zones — as long as the move leaves you completely un-marked. The escape clause (cannot end Marking or Marked) is restrictive: it's situationally excellent but not reliable. Great on players who blitz into a cage and want to escape the resulting counter-threat. Incompatible with Frenzy, which limits who can take it.",
+  beats:["Being surrounded after a key block","Multiple Tackle Zones on exit squares"],
+  beaten:["Crowded fields where no 'clean' square exists (skill simply can't fire)"],
+  synergy:["Block","Dodge","Dauntless"]
+},
+{
+  name:"Jump Up", cat:"ag", type:"active",
+  rules:"This Skill can be used whilst a player is Prone. A Prone player with this Skill can stand up for free without having to spend 3 squares of movement to do so. Additionally, a Prone player with this Skill can declare a Block Action whilst Prone. If they do, they must make an Agility Test, applying a +1 modifier to the result. If the Agility Test is passed, they may immediately stand up and perform the Block Action. If the Agility Test is failed, then the player remains Prone and their activation immediately ends.",
+  analysis:"Jump Up's key power is the free stand-up — saving 3 squares of movement is enormous on slow players or those needing to cover ground after being knocked over. The prone Block Action is a secondary bonus: a 4+ (with +1 mod) is reliable on AG3 players, letting them blitz immediately after being knocked down last turn. Great on players who will inevitably end up prone and can't afford the movement penalty.",
+  beats:["Being knocked down and needing to blitz","Movement drain from standing up"],
+  beaten:["Very low Agility (the Block Action test becomes unreliable)"],
+  synergy:["Block","Wrestle","Dauntless"]
+},
+{
+  name:"Leap", cat:"ag", type:"active",
+  rules:"During their Move Action, a player with this Skill can attempt to Leap over a single adjacent square regardless of what is in the square. Leaping works the same way as Jumping, with the exception that the Leaping player may reduce the negative modifiers they would receive by Leaping by 1, to a minimum of -1. A player with this Skill cannot also have the Pogo Trait.",
+  analysis:"Leap allows jumping over any occupied square — players, prone bodies, crowd squares — with reduced penalties. The core use is cage-busting: Leap into the middle of an opponent's cage formation to get directly adjacent to their ball carrier. This bypasses Guard setups entirely. The minimum -1 mod means even with two Tackle Zones in the target square you still have a chance. High-risk / high-reward skill for mobile, high-agility blitzers.",
+  beats:["Cage formations (jump straight in)","Guard assists on surrounding squares","Tight defensive lines"],
+  beaten:["Prehensile Tail (-1 additional mod)","Very Long Legs (gives opponent +1 to intercept but doesn't stop leap itself)","Low AG making the test unreliable"],
+  synergy:["Very Long Legs","Block","Dauntless"]
+},
+{
+  name:"Safe Pair of Hands", cat:"ag", type:"active",
+  rules:"If this player would be Knocked Down, Fall Over or be Placed Prone whilst in possession of the ball then, before they become Prone, they may place the ball in any adjacent unoccupied square to the square they will become Prone in instead of Bouncing the ball as normal.",
+  analysis:"Ball security through and through. When your ball carrier goes down, instead of a random bounce that your opponent may catch, you place the ball in a specific adjacent square — typically adjacent to one of your own players. This largely removes the chaos of a sacked carrier. Combine with Sure Hands to make picking it back up easy. The best ball-carrier protection skill behind Dodge+Block.",
+  beats:["Strip Ball (ball still placed, not Bounced)","Random bounces landing near opponents"],
+  beaten:["Ball placed in an unreachable square (if all adjacent squares are occupied)","Opponent already adjacent to the placed ball"],
+  synergy:["Sure Hands","Block","Dodge"]
+},
+{
+  name:"Sidestep", cat:"ag", type:"active",
+  rules:"Whenever this player is Pushed Back for any reason, then instead of the opposing Coach choosing where this player is Pushed Back to, this player's Coach may choose any adjacent unoccupied square for this player to be Pushed Back into instead. If there are no adjacent unoccupied squares, then this Skill cannot be used.",
+  analysis:"Sidestep flips the Push Back result from a liability into an asset. Instead of your opponent choosing where you land (often to set up a follow-up assist or push you into the crowd), you choose. This lets you reposition defensively, avoid being pushed into the crowd, or — critically — prevent a Frenzy chain by sidstepping to break the second-block angle. Extremely powerful on sideline players.",
+  beats:["Frenzy (you can sidestep to deny the second block angle)","Crowd push attempts","Opponent engineering follow-up assist positions"],
+  beaten:["Grab (opponent removes you from the square rather than pushing — Sidestep doesn't fire on Grab)","No adjacent unoccupied squares (skill can't fire)"],
+  synergy:["Fend (they can't follow up, you also control where you land)","Stand Firm","Dodge"]
+},
+{
+  name:"Sprint", cat:"ag", type:"active",
+  rules:"When this player performs a Move Action they may attempt to Rush one additional time than they would normally be allowed to.",
+  analysis:"Sprint gives an extra Rush attempt — meaning you get 3 Rushes instead of 2 (+3 movement total if all succeed). Each Rush is still a 2+ roll, so the odds of getting all three are decent (~67% with Sure Feet on the middle roll). Sprint is most valuable on receivers or ball carriers who need that extra square to score or reach safety. Less useful on slow players where the risk of rolling a 1 and causing a turnover outweighs the gain.",
+  beats:["Needing that one extra square to score","Defensive formations that plan around standard MA+2"],
+  beaten:["Rolling a 1 on a Rush causing a Turnover","Being Marked (dodging out costs movement before you Rush)"],
+  synergy:["Sure Feet","Dodge","Break Tackle"]
+},
+{
+  name:"Sure Feet", cat:"ag", type:"active",
+  rules:"Once per Turn, this player may re-roll a single D6 when attempting to Rush.",
+  analysis:"A free re-roll on one Rush per activation. Simple but reliable. Combined with Sprint it means you effectively get a guaranteed first Rush and then Sprint gives you a third attempt. Sure Feet is very efficient — it's a free team re-roll save on a common action. Pairs naturally with Sprint and any player who regularly rushes as part of a scoring drive.",
+  beats:["Rush failure causing a turnover","Tight scoring margin requiring those extra squares"],
+  beaten:["Still fails on the re-roll (you only get the one re-roll)"],
+  synergy:["Sprint","Break Tackle","Dodge"]
+},
+
+// ── DEVIOUS ──────────────────────────────────────────────────────────────
+{
+  name:"Dirty Player", cat:"dev", type:"active",
+  rules:"When this player performs a Foul Action, they may apply a +1 modifier to either the Armour Roll or Injury Roll. This modifier may be applied after the roll has been made.",
+  analysis:"+1 on armour OR injury (your choice, after rolling) means Dirty Player fires whether you need to crack armour or push an injury through. Applied after the roll is the key line — it's never wasted, you always see the rolls first. The most common fouling skill and fundamental to any fouling strategy. On AV7 or lower targets, even a single +1 to injury can mean the difference between Stunned and a Casualty.",
+  beats:["High-AV targets (helps crack armour)","Targeting specific injury results"],
+  beaten:["Sneaky Git overlap (you still get sent off on unbroken armour doubles)","Defensive (cancels Put the Boot In assists when the player with Defensive is marking)"],
+  synergy:["Sneaky Git","Quick Foul","Pile Driver"]
+},
+{
+  name:"Eye Gouge", cat:"dev", type:"active",
+  rules:"When an opposition player is Pushed Back by this player, the opposition player cannot provide Offensive or Defensive Assists until after they are next activated.",
+  analysis:"Eye Gouge is a disruption tool: every time you push someone back, they're locked out of assist-giving until activated. Use this on high-Guard pieces to break their ability to create assist chains for their remaining team. On a Blitz Action where you push back the opponent's key Guard player, every subsequent block your opponent makes that drive is weakened. The effect is subtle but multiplies over a series of blocks in a turn.",
+  beats:["Guard-heavy setups","Teams that rely on assist-chaining blocks"],
+  beaten:["Opponent activating the pushed player before making assisted blocks","POW results (the opponent is knocked down, not pushed — doesn't trigger Eye Gouge for pushes specifically)"],
+  synergy:["Guard","Block","Frenzy"]
+},
+{
+  name:"Fumblerooski", cat:"dev", type:"active",
+  rules:"When this player performs a Move Action whilst they are in possession of the ball, they may choose to place the ball on the ground in any square they move out of during their Move Action. This will not cause a Turnover.",
+  analysis:"Fumblerooski allows deliberate ball-dropping mid-move without turnover. The primary use is creating Hand-off-without-a-Hand-off: a carrier runs past a team-mate's square, drops the ball in that square, and the team-mate can then pick it up on their own activation. Useful for chain-passing without using your Pass Action, or for leaving the ball in a protected square while the carrier runs a decoy route.",
+  beats:["Needing to pass without using your Pass Action","Creating ball distribution without PA rolls"],
+  beaten:["Opponent being adjacent to the dropped ball square","Ball not being picked up and bouncing from a hit (though the drop itself is not a turnover)"],
+  synergy:["Give and Go","Sure Hands","Safe Pair of Hands"]
+},
+{
+  name:"Lethal Flight", cat:"dev", type:"active",
+  rules:"When this player is thrown as part of a Throw Team-mate Action, if they land in a square that contains an opposition player, including if they Bounce into a square containing an opposition player, and the opposition player is Knocked Down, then they may apply a +1 modifier to either the Armour Roll or Injury Roll. This modifier may be applied after the roll has been made. If an opposition player suffers a Casualty as a result of being Knocked Down by the thrown player with this Skill, then this player will count as having caused that Casualty and will receive Star Player Points as appropriate. A player without the Right Stuff Trait cannot have this Skill.",
+  analysis:"Lethal Flight is a throw-team-mate offensive skill for small players with Right Stuff. The thrown player becomes a living (or not) missile — when they land on/bounce into an opponent who goes down, they get Dirty Player-equivalent on the injury roll. SPP for the casualty is a bonus. This is a fouling strategy from the air: throw your snotling/goblin into the opponent's Mighty Blow player and hope for the best.",
+  beats:["AV7 or lower targets — the +1 pushes injury chances up significantly","Stacked opponents who can't avoid the scatter"],
+  beaten:["Failed landing scatter missing the target","Foul Appearance (opposition player may cancel the block action targeting them, though this is a landing not a Block Action per se)"],
+  synergy:["Throw Team-mate","Dirty Player (SPP synergy)","Violent Innovator"]
+},
+{
+  name:"Lone Fouler", cat:"dev", type:"active",
+  rules:"When this player performs a Foul Action, if there are no players providing an Offensive or Defensive Assist, then this player may re-roll a failed Armour Roll.",
+  analysis:"Lone Fouler rewards solo fouling — if you go in without any assisting players, you get a free armour re-roll. This is specifically useful for Sneaky Git users who want to foul solo to reduce the assist advantage for the ref (assists boost both sides). The re-roll on the armour roll compensates for the lack of a +1 from assists. Smart combination with Sneaky Git: foul solo, re-roll failed armour, and avoid send-off even on doubles if armour isn't broken.",
+  beats:["Ref detection probability management (solo foul)","Low-AV targets where cracking armour is likely already"],
+  beaten:["Opponents with high AV where you really need that assist +1 as well","Defensive (cancels the Put the Boot In assists but doesn't cancel Lone Fouler's own re-roll)"],
+  synergy:["Sneaky Git","Dirty Player","Quick Foul"]
+},
+{
+  name:"Pile Driver", cat:"dev", type:"active",
+  rules:"When an opposition player is Knocked Down by this player during a Block Action, this player may perform a free Foul Action against the opposition player so long as they are still Standing and are still Marking the opposition player. This player is then Placed Prone and their activation immediately ends.",
+  analysis:"Pile Driver is a one-punch + foul combo: knock them down, immediately foul, then you go prone. The foul fires without using your Foul Action for that turn, meaning your team still has its standard foul action available. The downside is you end prone — but you've already knocked them down AND fouled them. This is a high-tempo aggression tool. Combine with Dirty Player for the free foul's modifier to go to work. The timing risk is that you become prone adjacent to an opponent.",
+  beats:["Burning multiple actions on one player (block + foul in one activation)","Saving the team's regular Foul Action"],
+  beaten:["You end up Prone and adjacent to opponents","If the knocked down player is immediately picked up by Regeneration or a skill, the foul advantage is reduced"],
+  synergy:["Dirty Player","Mighty Blow","Guard"]
+},
+{
+  name:"Put the Boot In", cat:"dev", type:"active",
+  rules:"This player can provide Offensive Assists when a team-mate performs a Foul Action regardless of how many opposition players are Marking this player.",
+  analysis:"Normally an assisting player can be cancelled out by an opposing player marking them. Put the Boot In ignores this — you can assist fouls even while being heavily Marked. This is the backbone of a foul stack: your entire foul mob can assist regardless of being marked back. Every foul-focused team wants this on multiple players to guarantee large positive assist modifiers on armour rolls.",
+  beats:["Opposition trying to mark out your foul assisters","Situations where the opponent can always mark all your players"],
+  beaten:["Defensive (completely cancels Put the Boot In while the Defensive player Marks this player)","Being knocked down — must be Standing to assist"],
+  synergy:["Dirty Player","Sneaky Git","Pile Driver"]
+},
+{
+  name:"Quick Foul", cat:"dev", type:"active",
+  rules:"This player's activation does not end after performing a Foul Action, and they may continue with their Move Action with any movement they have remaining.",
+  analysis:"Quick Foul is unique: after fouling, you keep moving. Every other player ends their activation on a Foul. This lets a fast player foul mid-move, then use remaining MA to get into position or back to safety. Hugely powerful on speedy players — run in, foul a prone target, then sprint away from the scene. The player still risks sending off on doubles (unless Sneaky Git), but the ability to keep moving post-foul is rare.",
+  beats:["Foul-and-escape plays","Maximising multiple actions in one activation"],
+  beaten:["Being sent off still ends the activation (and the player leaves the pitch)","Defensive player Marking cancels Put the Boot In assists which limits foul quality"],
+  synergy:["Sneaky Git","Dirty Player","Sprint / Sure Feet"]
+},
+{
+  name:"Saboteur", cat:"dev", type:"active", special:"requires Secret Weapon Trait",
+  rules:"When this player is Knocked Down as a result of an opposition player's Block Action, before the Armour Roll is made, they may roll a D6. On a 1–3, nothing happens and the Armour Roll is made as normal. On a 4+, this player's sabotaged weapon goes off and the opposition player is also Knocked Down, though this will not cause a Turnover unless the opposition player was holding the ball. If this player's sabotaged weapon goes off, then they are automatically Knocked Out and the Armour Roll is not made for them. A player without the Secret Weapon Trait cannot have this Skill.",
+  analysis:"Saboteur is a kamikaze skill — you might take down your attacker with you, at the cost of being auto-Knocked Out. The 4+ chance is 50/50, and being KO'd is steep. However, on a player who has Secret Weapon and gets sent off at half time anyway, it's a last-ditch deterrent. The most notable use: the attacker going down doesn't cause a Turnover, so you won't waste your team's turn — unless they were holding the ball.",
+  beats:["Discouraging blocks on the Saboteur player","Getting value out of a player who would be sent off at half-time anyway"],
+  beaten:["50% chance of doing nothing","Auto-KO is a steep price"],
+  synergy:["Secret Weapon Trait","Violent Innovator"]
+},
+{
+  name:"Shadowing", cat:"dev", type:"active",
+  rules:"Each time an opposing player attempts to Dodge out of a square within this player's Tackle Zone, this player may use this Skill. When this player uses this Skill, roll a D6. On a 1–3, nothing happens. On a 4+, this player is immediately placed into the square that the opposition player vacated. This player may only use this Skill a number of times per Turn equal to their MA.",
+  analysis:"Shadowing is an active tracking mechanism — when a player dodges out of your tackle zone, you roll to teleport into the square they vacated. Success means you maintain marking on a fast, dodgy opponent. The MA limit (max uses per turn equals your MA) prevents infinite chain-shadowing but allows multiple uses on fast players. Devastating on speedy teams like Skaven or Elves who rely on dodging free each turn.",
+  beats:["High-MA, dodgy players who expect to easily dodge away","Building a tackle zone that follows the ball carrier"],
+  beaten:["Stand Firm (they don't dodge — no trigger)","Low roll probability (only 4+ = 50%)","Dodging into a square this player can't teleport into legally"],
+  synergy:["Tackle","Diving Tackle","Prehensile Tail"]
+},
+{
+  name:"Sneaky Git", cat:"dev", type:"active",
+  rules:"This player is not Sent-off when performing a Foul Action if a natural double is rolled for the Armour Roll, so long as the target player's Armour is not broken. If the target player's Armour is broken, this player will still be sent off as normal.",
+  analysis:"The key foul-safety skill. Normally, rolling a double on the armour roll gets you sent off. Sneaky Git says: you're safe on doubles IF you didn't break armour. This lets you foul freely even while fishing for high rolls, knowing a failed double won't cost you a player. The trade-off is carefully noted: if you DO break armour on a double, you still go. So if armour is broken, the ref sees you — Sneaky Git only saves you on harmless fouls.",
+  beats:["Fear of being sent off preventing fouling","Fouling with high modifiers that push into double territory risk"],
+  beaten:["Armour being broken on the double roll — no protection then","Defensive shutting down assists limits foul modifier quality"],
+  synergy:["Dirty Player","Lone Fouler","Quick Foul"]
+},
+{
+  name:"Violent Innovator", cat:"dev", type:"active", special:"requires Special Action Trait",
+  rules:"If an opposition player suffers a Casualty as a result of a Special Action this player performed, this player will earn Star Player Points for causing a Casualty as appropriate. A player can only have this Skill if they have a Trait that allows them to perform a Special Action.",
+  analysis:"Violent Innovator is purely an SPP farming skill — it gives Casualty SPP from Special Action casualties (Chainsaw, Stab, Bombardier, Breathe Fire etc.). Without it, special action casualties don't grant SPP. This is important for developing powerful players with Chainsaw or Stab traits that otherwise can't advance quickly. In a long league, the SPP difference compounds into stat upgrades or additional skills.",
+  beats:["SPP starvation on Special Action players","Advancing powerful chaos/mutation players faster"],
+  beaten:["Does nothing to improve actual performance — purely advancement focused"],
+  synergy:["Chainsaw Trait","Stab Trait","Bombardier Trait"]
+},
+
+// ── GENERAL ──────────────────────────────────────────────────────────────
+{
+  name:"Block", cat:"gen", type:"active",
+  rules:"A player with this Skill may choose not to be Knocked Down when a Both Down result is applied during a Block Action that they are part of.",
+  analysis:"Block is the foundational blocking skill. The Both Down result — where both players risk going down — is completely neutralised: you choose not to fall, so your opponent falls while you stay standing. This turns a risky 1-die block from a liability into a manageable play. Every player who blocks regularly wants Block. The 'Blodge' combo (Block + Dodge) is the premier ball-carrier build in the game.",
+  beats:["Both Down block dice result (completely negates it for you)","1-die blocks becoming safe plays","Wrestling opponents (Wrestle can still choose Both Down to drop you both, but Block + Wrestle the attacker still goes down)"],
+  beaten:["Wrestle (opponent can choose Both Down to place both prone — Block cannot stop Wrestle's Both Down)","Foul Appearance (may cancel the block action before dice are rolled)"],
+  synergy:["Dodge (Blodge)","Mighty Blow","Guard"]
+},
+{
+  name:"Dauntless", cat:"gen", type:"active",
+  rules:"When a player with this Skill performs a Block Action against an opposition player with a higher Strength Characteristic (before any modifiers are applied to either player), this player may roll a D6 and add their own Strength Characteristic. If the result is higher than the opposition player's unmodified Strength Characteristic, then this player increases their unmodified Strength Characteristic to match the opposition player for the duration of the Block Action. Modifiers are then applied as normal. If this player also has a Skill that allows them to perform multiple Block Actions, such as the Frenzy Skill, then they must make a separate roll for each Block Action.",
+  analysis:"Dauntless lets weaker players punch up against big guys. Roll D6 + your ST: if it beats the opponent's ST, you match their strength for that block. Against ST5 players, a ST3 player needs 3+ on the die — that's 67% chance to match strength. This makes small-but-skilled players competitive against Trolls, Ogres, and Mummies. Key limitation: it's based on unmodified ST, so Guard on your side doesn't help trigger it — it resolves on base stats, then mods apply.",
+  beats:["Big guys with high Strength but poor skills","Strength 5+ players where you'd otherwise block at disadvantage"],
+  beaten:["Juggernaut (Juggernaut on a Blitz negates Fend and can count Both Down as a Push — Dauntless still rolls but the block results differ)","Guard stacking reducing the value of matching strength (you matched, but they still have more assists)"],
+  synergy:["Block","Frenzy","Jump Up"]
+},
+{
+  name:"Fend", cat:"gen", type:"active",
+  rules:"When a player with this Skill is Pushed Back as a result of a Block Action performed against them, then the opposition player may not Follow-up. This Skill cannot be used against a player with the Ball & Chain Trait or against a player with the Juggernaut Skill that is performing a Blitz Action.",
+  analysis:"Fend prevents the Follow-up after a Push Back. This is critical against Frenzy players — if you get Pushed Back (not knocked down), Frenzy requires Follow-up, but Fend stops it. No Follow-up means no second block. It also breaks the positioning game: pushes are used to set up assisting positions, and Fend denies that. Note the hard counters: Ball & Chain ignores it, and Juggernaut on a Blitz Action ignores it.",
+  beats:["Frenzy (denies the mandatory Follow-up, breaking the second block)","Positioning pushes — opponent can't chase you"],
+  beaten:["Juggernaut on a Blitz Action (explicitly bypasses Fend)","Ball & Chain (explicitly bypasses Fend)","Knockdown results (Fend only triggers on Push Back, not POW)"],
+  synergy:["Sidestep","Stand Firm","Dodge"]
+},
+{
+  name:"Frenzy", cat:"gen", type:"active", compulsory:true,
+  rules:"Every time this player performs a Block Action, if the target is Pushed Back, then this player must Follow-up if able. Additionally, if after the target is Pushed Back they are still Standing, then this player must perform a second Block Action targeting the same opposition player and must again Follow-up if the target is Pushed Back. If this player is performing a Blitz Action, performing a second Block Action will also cost the player a square of movement. If this player has no movement left, then they must Rush. If this player cannot Rush then they cannot perform the second Block Action. A player with this Skill cannot have the Grab, Hit & Run or Multiple Block Skills.",
+  analysis:"Frenzy is a double-edged sword: enormous offensive pressure, but the compulsory Follow-up is a trap waiting to happen. Frenzy players will gladly follow opponents into the crowd, follow up into a marked square, or chain into dangerous terrain. The second block creates extra damage potential but also extra dice rolls that could Turnover. Manage Frenzy carefully — push opponents toward the sideline rather than toward your own half. Cannot combine with Grab, Hit & Run, or Multiple Block.",
+  beats:["Crowd-pushing strategies (follow into sideline)","Wearing down opponents across two blocks per activation"],
+  beaten:["Sidestep (opponent chooses push direction, can deny second block angle)","Fend (stops the Follow-up, ending the Frenzy chain)","Opponent engineering a POW on the second block to hurt you back"],
+  synergy:["Mighty Blow","Block","Juggernaut"]
+},
+{
+  name:"Kick", cat:"gen", type:"active",
+  rules:"If this player is nominated as the kicking player, then when kicking Deviates this player's Coach may choose for it to only Deviate D3 squares rather than the usual D6.",
+  analysis:"Kick gives kick control — D3 deviation instead of D6 means kicks can be placed much more accurately. A kick that deviates up to 3 squares rather than 6 can reliably land in a dangerous zone for your opponent. The best kickoff strategy is putting the ball in a 'coffin corner' where it's hard to reach and you're positioned to blitz the receiver. Kick dramatically improves your ability to execute this plan.",
+  beats:["Random kick deviation ruining coffin corner plans","Opponent receiving an easy, centered kick"],
+  beaten:["Kick-off Event still causes full deviation effects","Doesn't help if your team can't capitalise on the kick position"],
+  synergy:["On the Ball","Cloud Burster","Punt"]
+},
+{
+  name:"Pro", cat:"gen", type:"active",
+  rules:"During this player's activation, they may attempt to re-roll a single dice. This can be a dice roll on its own, as part of a multiple dice roll or as a dice pool. To use this Skill, the player must roll a D6: on a 3+ the dice may be re-rolled, on a 1-2 the dice may not be re-rolled. The Skill cannot be used to re-roll a dice made as part of an Armour Roll, Injury Roll, Casualty roll, a roll made outside of the player's activation, or any dice roll not made on the player's behalf (such as Argue the Call or if the Crowd Takes Action). Once a player has attempted to use this Skill, they cannot use a re-roll from any other source to re-roll the dice.",
+  analysis:"Pro is a flexible but unreliable re-roll. The 3+ requirement means it only works 67% of the time — and failing to get the re-roll costs the action without any benefit. It can apply to any die roll in your activation, making it broadly applicable. Most useful when Team Re-rolls are exhausted. The key limiter: it does NOT save re-rolls from other sources — it replaces them. Once you declare Pro, you can't then use a Team Re-roll if Pro fails.",
+  beats:["Having a catch-all re-roll when Team Re-rolls are gone","Applying to unusual dice rolls that specific skills don't cover"],
+  beaten:["2-in-6 chance of doing nothing (worse than a straight Team Re-roll)","Burning a Pro attempt and still failing the re-roll wastes both"],
+  synergy:["Leader","Any high-value activation player"]
+},
+{
+  name:"Steady Footing", cat:"gen", type:"active",
+  rules:"Whenever this player would be Knocked Down or Fall Over, roll a D6. On a 6, this player does not get Knocked Down or Fall Over. If this happens during their activation, they may continue their activation as normal and no Turnover will be caused.",
+  analysis:"Steady Footing is a low-probability safety net: 1-in-6 chance to simply ignore a knockdown or fall. On its own this is marginal, but the Turnover prevention is powerful — if Steady Footing fires during your turn, the activation continues. This is particularly valuable for ball carriers who would otherwise cause a catastrophic Turnover. However, at 16.7% it should never be relied upon; it's a pleasant surprise, not a plan.",
+  beats:["Preventing unexpected Turnovers (carrier trips, blocks on ball carrier)","Any knockdown during your own activation"],
+  beaten:["Low probability — fires only 1-in-6 times","Doesn't help if the knockdown happens outside your activation (no Turnover would occur then anyway)"],
+  synergy:["Block","Dodge","Sure Hands"]
+},
+{
+  name:"Strip Ball", cat:"gen", type:"active",
+  rules:"When this player performs a Block Action against an opposition player holding the ball, if an opposition player is Pushed Back then they will drop the ball in the square they are Pushed Back into, at which point it will Bounce from that square. This Bounce will happen before the opposition player becomes Prone (if applicable) but after this player chooses to Follow-up.",
+  analysis:"Strip Ball forces a fumble on a Push Back result — even without a knockdown. This is hugely significant: a Push Back is a very common block result, and normally doesn't produce a turnover. With Strip Ball, every push against the ball carrier becomes a ball-loosening event. The ball Bounces from the pushed square, which may land anywhere. Great against sure-handed carriers. Note: Sure Hands completely counters Strip Ball.",
+  beats:["Dodge players who avoid knockdowns (Stumble = Push Back, but Strip Ball then fires)","Heavily armoured carriers who are hard to knock down"],
+  beaten:["Sure Hands (explicitly negates Strip Ball)","Bounced ball going in a bad direction for you","Safe Pair of Hands (carrier places ball rather than letting it Bounce)"],
+  synergy:["Tackle","Frenzy","Block"]
+},
+{
+  name:"Sure Hands", cat:"gen", type:"active",
+  rules:"This player may re-roll the D6 when attempting to pick up the ball, though not when making a Secure the Ball Action. Additionally, the Strip Ball Skill cannot be used against this player.",
+  analysis:"Sure Hands does two things: re-roll on picking up the ball, and immunity to Strip Ball. The pick-up re-roll is essential for reliable ball retrieval — the most common cause of early-turn Turnovers is fumbling the pick-up. The Strip Ball immunity means aggressive push-block strategies won't dislodge your carrier. Every team's primary ball carrier should either have Sure Hands or have a low pick-up roll naturally. Don't put the ball in anyone's hands without it.",
+  beats:["Strip Ball (completely negates it)","Pick-up failures causing Turnovers"],
+  beaten:["Doesn't help against Wrestle knocking the carrier prone","Doesn't help against knockdowns — ball still Bounces unless Safe Pair of Hands is also present"],
+  synergy:["Safe Pair of Hands","Block","Dodge"]
+},
+{
+  name:"Tackle", cat:"gen", type:"active",
+  rules:"When an opposition player attempts to Dodge away from a square in this player's Tackle Zone, they cannot use the Dodge Skill. Additionally, when this player performs a Block Action against an opposition player, the opposition player does not count as having the Dodge Skill if a Stumble result is selected.",
+  analysis:"Tackle is the hard counter to the Dodge skill. Without Tackle, a Dodge player can re-roll failed dodges AND turns Stumble into a mere Push Back. With Tackle, both advantages disappear. Against Elves, Dark Elves, Amazons, Halflings, or any Dodge-heavy team, Tackle is mandatory on your blitzers. Even one Tackle player on a team forces the opponent to calculate dodges very differently. The meta impact of Tackle on Dodge-based strategies cannot be overstated.",
+  beats:["Dodge re-roll (removes it entirely)","Stumble converting to Push Back (the Dodge block dice protection is gone)"],
+  beaten:["Dodge players who successfully roll their Agility Test without needing the re-roll","Doesn't help against non-Dodge evasion (Jump Up, Leap etc.)"],
+  synergy:["Block","Diving Tackle","Strip Ball"]
+},
+{
+  name:"Taunt", cat:"gen", type:"active",
+  rules:"When a player with this Skill is Pushed Back as a result of a Block Action performed against them, this player's Coach may choose to make the opposition player Follow-up. This Skill cannot be used against an opposition player with the Take Root Trait that has become Rooted.",
+  analysis:"Taunt forces Follow-up on your terms. Normally Follow-up is optional for the attacker. With Taunt, you can make the attacker Follow-up — dragging them into awkward positions, away from teammates, or even into your own players' Tackle Zones. Excellent for disrupting opponent positioning after a block goes against you. Note: this doesn't work against Rooted (Take Root) players who physically cannot move.",
+  beats:["Opponent trying to maintain positional advantage by NOT following up","Pulling a key blocker away from their formation"],
+  beaten:["Take Root players who are Rooted (explicitly excluded)","Opponent who wanted to Follow-up anyway (Taunt does nothing if they were going to)"],
+  synergy:["Sidestep","Fend","Guard"]
+},
+{
+  name:"Wrestle", cat:"gen", type:"active",
+  rules:"When this player performs a Block Action, or is the target of a Block Action, if the Both Down result is applied, this player may choose to use this Skill. If they do, both players in the Block Action are Placed Prone, regardless of any other Skills they may possess.",
+  analysis:"Wrestle says: on a Both Down result, both players go prone regardless of Block, Stand Firm, or any other skill. This counters Block directly — a player with Block would normally choose not to fall on Both Down, but Wrestle overrides this. Wrestlers generate knockdowns against Block players who would otherwise be immune to Both Down. Essential for teams that need to put expensive, Block-equipped players on the floor without needing high Strength.",
+  beats:["Block (Both Down normally does nothing to a Block player — Wrestle makes them fall anyway)","High-ST players you can't overpower normally"],
+  beaten:["Juggernaut on a Blitz Action (can treat Both Down as Push — though Wrestle then can also fire if Wrestle player chooses)","Puts BOTH players prone — you go down too, costing your activation"],
+  synergy:["Strip Ball","Jump Up","Tackle"]
+},
+
+// ── MUTATION ─────────────────────────────────────────────────────────────
+{
+  name:"Big Hand", cat:"mut", type:"active",
+  rules:"This player ignores all negative modifiers when attempting to pick up the ball.",
+  analysis:"Big Hand removes all pick-up penalties — rain, opposing tackle zones, Disturbing Presence — all of it. The pick-up roll is a flat agility test with no downside. This makes Big Hand players the ideal ball-retrievers in difficult conditions (rain, opposing swarm Tackle Zones, Disturbing Presence teams). Extremely powerful in foul weather games or against mutation-heavy teams with Disturbing Presence.",
+  beats:["Rain modifiers on pick-up","Disturbing Presence modifier stacking","Multiple Tackle Zones around the ball"],
+  beaten:["Doesn't help with catching or dodging — only pick-up","Doesn't matter if no modifiers apply (becomes baseline AG roll)"],
+  synergy:["Sure Hands","Extra Arms","Catch"]
+},
+{
+  name:"Claws", cat:"mut", type:"passive",
+  rules:"Whenever an Armour Roll is made for an opposition player that has been Knocked Down by this player during a Block Action, even if this player is also Knocked Down, then any roll of a natural 8+ on the Armour Roll will break the opposition player's armour regardless of their actual Armour Value.",
+  analysis:"Claws is the most feared offensive mutation. Any natural 8+ on the armour roll cracks armour automatically — it completely negates high AV. Dwarfs (AV10+), Chaos Warriors (AV9), Orcs (AV9) all become just as vulnerable as a Snotling if you roll 8+. The probability of rolling 8+ on 2D6 is 41.7%. With Mighty Blow (+1) that becomes a 7+ (58.3%). The Claws + Mighty Blow combination is the most damage-dealing pairing in the game — Iron Hard Skin is its only counter.",
+  beats:["High AV players — renders AV irrelevant for natural 8+ rolls","Stunty teams relying on hard-to-hurt big guys"],
+  beaten:["Iron Hard Skin (explicitly immune to Claws — a hard counter)"],
+  synergy:["Mighty Blow","Frenzy","Block"]
+},
+{
+  name:"Disturbing Presence", cat:"mut", type:"passive", compulsory:true,
+  rules:"Any opposition player that performs a Pass Action, Throw Team-mate Action or a Throw Bomb Special Action, or attempts to Intercept or Catch the ball, applies a -1 modifier to their Passing Ability Test or Agility Test for each player on your team with this Skill within 3 squares of them.",
+  analysis:"Disturbing Presence is a passive aura: stack multiple DP players near the ball and each one applies -1 to passing, catching, and interceptions. Two DP players within 3 squares is a -2 penalty — turning a routine 3+ catch into a 5+. It doesn't target blocks or dodges, but it fundamentally disrupts the passing game. Big Hand completely ignores pick-up penalties but DP affects catches. Nurgle and certain mutation teams weaponise this heavily.",
+  beats:["Passing game teams (forces re-rolls or outright failures)","Catching players positioned near the ball"],
+  beaten:["Big Hand (doesn't apply to pick-ups)","Nerves of Steel (ignores marking modifiers for passing — but DP is a player proximity mod, NOT a marking mod, so Nerves of Steel does NOT negate DP)","Teams that run the ball (DP is irrelevant to dodges and blocks)"],
+  synergy:["Tentacles","Prehensile Tail","Foul Appearance"]
+},
+{
+  name:"Extra Arms", cat:"mut", type:"active",
+  rules:"This player applies a +1 modifier to the Agility Test whenever they attempt to Catch, Pick Up or Intercept the ball.",
+  analysis:"+1 to Catch, Pick Up, and Intercept: a broad and consistent improvement. Unlike Big Hand (which only helps pick-up and specifically ignores penalties), Extra Arms adds a flat bonus to three different ball-handling rolls. An AG3 player becomes AG2+ on all ball handling — essentially turning them into an AG4 player for these purposes. Great on players who handle the ball regularly and aren't already maxed on agility.",
+  beats:["Marginal catch rolls under pressure","Long pass interceptions that would otherwise be very unlikely"],
+  beaten:["Doesn't help with dodges","Doesn't stack as well as Big Hand in heavy-penalty situations (Big Hand still ignores all penalties while Extra Arms just adds +1 net)"],
+  synergy:["Catch","Diving Catch","Sure Hands"]
+},
+{
+  name:"Foul Appearance", cat:"mut", type:"passive", compulsory:true,
+  rules:"Whenever an opposition player attempts to perform a Block Action against this player, or a Special Action that targets this player directly, they must roll a D6 before any other dice are rolled. On a 2+, the Block Action continues as normal. On a 1, the Block Action is immediately cancelled and the opposition player's activation immediately ends.",
+  analysis:"Foul Appearance gives a 1-in-6 (16.7%) chance to cancel any block or targeted special action before it even resolves. An entire activation wasted on a 1. On big guys who are already hard to move, FA makes them infuriating to engage. Against a player with Mighty Blow, Claws, and Foul Appearance, your opponent faces both a potential activation wasted AND then brutal injury rolls if they do get through. The activation-ending effect doesn't cause Turnovers — it just ends the action.",
+  beats:["Discouraging blocks entirely on high-value targets","Multiple blocks per turn being disrupted"],
+  beaten:["Doesn't prevent indirect threats (fouls, spells, weather)","1-in-6 is not reliable — six blocks later your opponent has likely gotten through five successfully"],
+  synergy:["Claws","Mighty Blow","Stand Firm"]
+},
+{
+  name:"Horns", cat:"mut", type:"active",
+  rules:"Whenever this player declares a Blitz Action, then they apply a +1 modifier to their Strength Characteristic for any Block Actions performed during that Blitz Action.",
+  analysis:"+1 Strength on a Blitz Action — significant because it applies to block dice calculations. A ST3 player becomes ST4 on their blitz, potentially pushing into equal-strength or even overpower territory against ST3 opponents. Combined with Dauntless, Horns helps ensure the Dauntless roll isn't needed as often. Against ST4 opponents, Horns + Dauntless makes Blitzes very viable. Excellent on fast, mobile players who regularly blitz.",
+  beats:["Equal-strength matchups where +1 changes dice from 1-die to 2-die block","High-ST players who Horns alone won't match, but shifts the math"],
+  beaten:["Only fires on Blitz Actions — no bonus on regular Block Actions"],
+  synergy:["Dauntless","Frenzy","Block"]
+},
+{
+  name:"Iron Hard Skin", cat:"mut", type:"passive",
+  rules:"Opposition players cannot apply any modifiers when making an Armour Roll against this player. Additionally, the Claws Skill cannot be used against this player.",
+  analysis:"Iron Hard Skin is the hard counter to Claws, and also nullifies Mighty Blow modifiers on armour rolls. Your armour is locked — opponents roll 2D6 and must beat your unmodified AV with no bonuses. Against Claws + Mighty Blow teams (Chaos, Necromantic, some Nurgle builds), IHS makes your player nearly impervious. The critical note: it doesn't prevent injury modifiers, only armour roll modifiers. So if armour is somehow cracked, the injury roll can still be boosted.",
+  beats:["Claws (explicitly immune)","Mighty Blow on armour rolls","Any +1 modifier to armour"],
+  beaten:["Injury roll modifiers still apply once armour is broken","Pile Driver or very high 2D6 natural rolls can still crack your AV on luck alone"],
+  synergy:["High AV players (maximises the value of already-strong armour)","Stand Firm","Block"]
+},
+{
+  name:"Monstrous Mouth", cat:"mut", type:"active",
+  rules:"When this player is activated, they may declare a Chomp Special Action; there is no limit to the number of players that can declare this Special Action each Turn. When this player declares a Chomp Special Action, they may select one Standing opposition player they are Marking and roll a D6. On a 1-2 nothing happens. On a 3+, the opposition player is considered to be Chomped. Whilst Chomped, the opposition player cannot leave the square they are in whilst this player remains Marking them. This condition ends immediately if this player is no longer Marking the opposition player for any reason. This player may use the Chomp Special Action to replace the Block Action made as part of a Blitz Action if they wish. Additionally, the Strip Ball Skill cannot be used against this player.",
+  analysis:"Monstrous Mouth Chomps a target on 3+ — while Chomped they cannot leave their square whilst being Marked. This is essentially a hard-lock on any Standing player: your Monstrous Mouth player marks them, Chomps them, and they are frozen until you release or get knocked over. The Strip Ball immunity is a useful secondary benefit for carriers. Chomp is most powerful on fast, mobile opponents who rely on dodging free — they simply can't.",
+  beats:["High-mobility players who dodge every turn (locked completely)","Ball carriers (frozen, cannot run — only a knockdown breaks them free)"],
+  beaten:["A 1-2 result on the D6 (3-in-6 miss rate before skill does nothing)","Any knockdown on Monstrous Mouth player releases the target","Opponent blitzing or Fouling the Monstrous Mouth player free"],
+  synergy:["Tentacles","Tackle","Prehensile Tail"]
+},
+{
+  name:"Prehensile Tail", cat:"mut", type:"active",
+  rules:"When an opposition player attempts to Dodge, Jump or Leap away from a square in this player's Tackle Zone, they apply an additional -1 modifier to the Agility Test. If a player tries to leave the Tackle Zone of multiple players with this Skill at the same time, only one of those players may use this Skill.",
+  analysis:"Prehensile Tail passively applies -1 to Dodge, Jump, and Leap attempts away from your Tackle Zone. It doesn't do anything on its own but multiplies with other negative modifiers. Stack multiple PT players near an opponent and they're looking at -2 or -3 to their agility test (though only one PT fires per leave attempt). Against an AG3 player: a -1 turns a standard 4+ dodge into a 5+ — significantly increasing turnover risk. Only one PT can apply per dodge, even if multiple PT players are Marking.",
+  beats:["High-AG dodgers who expect clean escape","Leap-based cage-busters"],
+  beaten:["Only one Prehensile Tail fires per dodge attempt (multiple PT players don't stack)","Players with Two Heads (+1 to dodge, can offset the penalty)","Very long legs (+1 to jump/leap, partially offsets)"],
+  synergy:["Tentacles","Diving Tackle","Tackle"]
+},
+{
+  name:"Tentacles", cat:"mut", type:"active",
+  rules:"When an opposition player attempts to Dodge, Jump or Leap away from a square in this player's Tackle Zone, this player may use this Skill. When a player uses this Skill they roll a D6 and add their Strength characteristic to the roll; they then subtract the Strength Characteristic of the opposition player from the result. If the result is 6 or higher, or the roll is a natural 6, then the opposition player does not leave the square they attempted to leave and their activation comes to an end. If the result is 5 or lower, or the roll is a natural 1, this Skill has no effect. If a player tries to leave the Tackle Zone of multiple players with this Skill at the same time, only one of those players may use this Skill.",
+  analysis:"Tentacles is a combat Grapple — you roll D6 + your ST - their ST: on 6+, their activation ends and they're stuck. A ST4 Tentacles player vs a ST3 opponent: you need 5+ (55.6%). Against ST2 opponents that's 4+ (66.7%). Like Prehensile Tail, only one Tentacles fires per escape attempt. The massive difference from Prehensile Tail: Tentacles completely ends the opponent's activation on success — they can't even declare a different action.",
+  beats:["Highly mobile ball carriers (activation ended = no scoring threat that turn)","Dodge-based teams (fires on any dodge away)"],
+  beaten:["High-ST opponents — a ST5 player vs your ST4 Tentacles needs 5+ (same odds reversed)","Natural 1 always fails","Only one Tentacles fires per dodge"],
+  synergy:["Monstrous Mouth","Prehensile Tail","Stand Firm"]
+},
+{
+  name:"Two Heads", cat:"mut", type:"active",
+  rules:"This player may apply a +1 modifier to the Agility Test whenever they attempt to Dodge.",
+  analysis:"+1 to all Dodge attempts — elegant simplicity. Turns a 4+ dodge into a 3+, or a 3+ into a 2+. When combined with Dodge (the skill), this player has a re-roll AND a +1 modifier, making them incredibly hard to mark down. An AG4, Two Heads, Dodge player dodges on 2+... with a re-roll. You need Diving Tackle or Prehensile Tail to even slow them down. Perfect for agile ball carriers and screens.",
+  beats:["Tackle zones on standard paths","Prehensile Tail partially (the +1 offsets the -1)"],
+  beaten:["Tackle (removes Dodge re-roll and Stumble protection — Two Heads +1 remains but re-roll is gone)","Diving Tackle (fires after re-rolls, -2 is brutal even with +1)"],
+  synergy:["Dodge","Sprint","Leap"]
+},
+{
+  name:"Very Long Legs", cat:"mut", type:"active",
+  rules:"This player may apply a +1 modifier to the Agility Test whenever they attempt to Leap or Jump, and may apply a +2 modifier to the Agility Test whenever they attempt to Intercept the ball. Additionally, this player ignores the Cloud Burster Skill.",
+  analysis:"+1 to Leap/Jump and +2 to Interceptions, plus Cloud Burster immunity. The interception bonus is the headline — +2 makes interceptions far more viable than normally. An AG3 player needs 6+ to intercept normally; with VLL they need 4+. Combined with the Leap bonus, VLL players are cage-busters who can also threaten passing lanes. Cloud Burster bypass is a niche but powerful meta-call against Skaven teams that use Cloud Burster.",
+  beats:["Cloud Burster (bypasses it entirely)","Leap-based maneuvers into defended areas","Opposing passing game — interception threats force conservative passes"],
+  beaten:["Doesn't help with dodging or regular movement","Still needs to be in a position to intercept or leap"],
+  synergy:["Leap","Diving Catch","On the Ball"]
+},
+
+// ── PASSING ──────────────────────────────────────────────────────────────
+{
+  name:"Accurate", cat:"pas", type:"active",
+  rules:"When this player performs a Pass Action which is a Quick Pass or a Short Pass, this player may apply a +1 modifier to the Passing Ability Test.",
+  analysis:"+1 to Short and Quick passes — the most common pass types. This makes a PA2+ thrower pass Short passes on 2+ without modifiers and makes marked passing more reliable. The limitation is it doesn't apply to Long Pass or Long Bomb (those are Cannoneer's territory). On any team running a passing game with primarily short-to-medium range plays, Accurate on the Thrower is standard. Critical for sure-handed, short-range distribution.",
+  beats:["Passing while marked (the +1 offsets the marking penalty)","Disturbing Presence stacking (partially offsets one DP player's -1)"],
+  beaten:["Long Pass / Long Bomb situations (no bonus applies)","Doesn't help with catching"],
+  synergy:["Pass (re-roll + modifier on same action)","Nerves of Steel","Give and Go"]
+},
+{
+  name:"Cannoneer", cat:"pas", type:"active",
+  rules:"When this player performs a Pass Action which is a Long Pass or a Long Bomb, this player may apply a +1 modifier to the Passing Ability Test.",
+  analysis:"+1 to Long and Long Bomb passes only. The mirror of Accurate for long range. A Long Bomb is typically the highest risk pass (PA3+ on most throwers, often 4+ with modifiers), so the +1 is meaningful in making deep balls viable. Cannoneer enables a vertical passing game that most teams otherwise avoid due to unreliability. Best on teams with reliable deep receivers (Sprint + Catch receivers ready downfield).",
+  beats:["Long pass failures being too costly to attempt","Reaching the endzone in 1 pass from deep"],
+  beaten:["Doesn't help with Short or Quick passes","Long Bomb still has a high base failure rate even with +1"],
+  synergy:["Accurate (if you want all pass ranges)","Hail Mary Pass","Strong Arm"]
+},
+{
+  name:"Cloud Burster", cat:"pas", type:"active",
+  rules:"When this player performs a Pass Action, opposition players may not attempt to Intercept the ball.",
+  analysis:"Cloud Burster eliminates interceptions entirely on your pass actions. In a meta where interception modifiers can be stacked (On the Ball, Very Long Legs), the threat of interception forces conservative passing routes. Cloud Burster removes that threat, freeing your thrower to attempt any route. Powerful on teams committing to a passing game and facing mobile opponents with interception-boosting skills. Very Long Legs explicitly bypasses Cloud Burster — a hard counter.",
+  beats:["On the Ball players repositioning for interceptions","Very Long Legs interceptors (except they explicitly bypass Cloud Burster)"],
+  beaten:["Very Long Legs explicitly bypasses Cloud Burster","Doesn't improve pass accuracy — only removes interception risk"],
+  synergy:["Accurate","Pass","Hail Mary Pass"]
+},
+{
+  name:"Dump-Off", cat:"pas", type:"active",
+  rules:"Whenever an opposition player attempts to perform a Block Action against this player, or a Special Action that targets this player directly, this player may use this Skill. When they do, this player may immediately perform a Quick Pass before the Action targeting them is resolved. This Quick Pass cannot cause a Turnover, but otherwise follows all the normal rules for making a Quick Pass. Once the Quick Pass has been resolved, this Action targeting this player continues.",
+  analysis:"Dump-Off is a reactive Quick Pass when someone blitzes you. It fires before the block is resolved. Critical use: your carrier gets blitzed, you Dump-Off to an open teammate before being hit — even if you then drop the ball, the teammate already has it. Since the Dump-Off quick pass can't cause a Turnover by itself, a fumble just leaves the ball on the ground rather than ending your turn. Fantastic anti-blitz protection. The block still resolves after.",
+  beats:["Blitzing the ball carrier (they pass before you connect)","Strip Ball — the pass fires first"],
+  beaten:["Needing a nearby Open receiver to pass to (no target = no Dump-Off value)","Quick Pass failure on poor PA — ball may land poorly after the block resolves"],
+  synergy:["Nerves of Steel","Pass","Safe Pair of Hands"]
+},
+{
+  name:"Give and Go", cat:"pas", type:"active",
+  rules:"If this player performs a Pass Action that is a Quick Pass, or performs a Hand-off Action, then, so long as a Turnover isn't caused, their activation does not end once the Pass or Hand-off is resolved. Instead, they may continue with their Move Action using any movement they have remaining.",
+  analysis:"Give and Go lets your thrower keep moving after a Quick Pass or Hand-off. This is a tempo skill: pass to a nearby player, then continue running to a blocking or positioning role. It turns a Thrower from a stationary passer into an active participant every turn. Excellent for screens and short-game teams — pass the ball, then move into a Guard or support position rather than standing still.",
+  beats:["Throwers being 'wasted' activations after passing","Needing to set up a block and a pass in the same turn"],
+  beaten:["Long or Short Pass doesn't benefit — only Quick Pass and Hand-off","A Turnover from the pass ends the skill immediately"],
+  synergy:["Pass","Accurate","Block / Guard"]
+},
+{
+  name:"Hail Mary Pass", cat:"pas", type:"active",
+  rules:"This player may declare a Punt Special Action; only a single player may declare a Punt Special Action each Turn. When a player declares a Punt Special Action they are first allowed to make a Move Action, though they cannot continue to move after the Punt Special Action has been resolved.",
+  analysis:"Hail Mary Pass grants the Punt Special Action — a high-arc bomb that lands in a target square (with deviation). The Punt is a Deep Bomb play: get the ball far downfield fast. Against defences that pressure deep, a well-executed Punt with Kick control can pinpoint a receiver far downfield. Best used when your team has fast receivers to chase down the ball. Note: only ONE Punt per turn, and movement ends after it.",
+  beats:["Short-MA teams who can't defend deep effectively","Rapidly transitioning from own half to opponent's territory"],
+  beaten:["Deviation on the Punt can land anywhere — risky in congested areas","Only one per turn limits its use in multi-pass schemes"],
+  synergy:["Kick","On the Ball","Cannoneer"]
+},
+{
+  name:"Leader", cat:"pas", type:"passive",
+  rules:"A team that has one or more players with the Leader Skill on the pitch at the start of a half may gain a single extra Team Re-roll - this is called a Leader Re-roll. A team can only use a Leader Re-roll if they have a player with the Leader Skill on the pitch, and if all players with this Skill are removed from play, either as a Casualty or by being Sent-off, before the Leader Re-roll is used then it is lost. A Leader Re-roll follows all of the usual rules for standard Team Re-rolls, with the exception that it cannot be lost as a result of a Halfling Master Chef.",
+  analysis:"Leader provides one extra Team Re-roll per half as long as a Leader player is on the pitch — effectively a +2 re-rolls per game investment. Since re-rolls cost 50,000-70,000 gold pieces each on most rosters, Leader is tremendously cost-efficient. The risk is the Leader player being Casualty or Sent-Off before you use the re-roll. Most teams that can access Leader (Throwers, some Catchers) run exactly one copy. Immune to Halfling Master Chef, which is a minor but occasionally relevant protection.",
+  beats:["Re-roll scarcity in late game situations","Teams that drain re-rolls through wizard or Master Chef effects"],
+  beaten:["Leader player being removed from play before using the re-roll","Only grants ONE extra re-roll — not a stack"],
+  synergy:["Pro","Pass","Any player who benefits from saving team re-rolls"]
+},
+{
+  name:"Nerves of Steel", cat:"pas", type:"active",
+  rules:"This player may ignore any modifiers for being Marked when making an Agility Test to Catch the ball, or when making a Passing Ability Test to Pass the ball.",
+  analysis:"Nerves of Steel removes the -1 per Tackle Zone modifier on both passing and catching while marked. A player in two tackle zones suffers -2 without NoS — with it, those marks are irrelevant. This is essential for carriers who regularly operate near opponents and for throwers who get blitzed and marked. Critically: it does NOT negate Disturbing Presence (which is a proximity modifier, not a marking modifier).",
+  beats:["Marking tactics that load tackle zones on your thrower or receiver","Setting up surrounded-carrier situations"],
+  beaten:["Disturbing Presence is NOT a marking modifier — NoS doesn't negate it","Diving Tackle still fires on dodges (NoS doesn't help with AG tests generally — only pass/catch marking mods)"],
+  synergy:["Dump-Off","Pass","Accurate"]
+},
+{
+  name:"On the Ball", cat:"pas", type:"active",
+  rules:"When an opposition player performs a Pass Action, after the target square has been declared but before the Passing Ability Test is rolled, this player may move up to 3 squares, following all the usual rules for a Move Action, with the exception that they cannot Rush. Additionally, during the Start of Drive Sequence, after the Kick Deviates but before the Kick-off Event is rolled, a single Open player on the receiving team with this Skill may move up to 3 squares, following all the usual rules for a Move Action, with the exception that they cannot Rush. A player may not use this Skill if a Touchback is caused and may not move into the opposition half. Should this player Fall Over whilst using this Skill, their movement immediately ends and the Kick-off Event is rolled.",
+  analysis:"On the Ball gives a reactive 3-square move before the opponent's pass resolves — a pre-pass intercept repositioning. This threatens interception on passes that the player wasn't positioned for. The kick-off pre-movement is also strong: a free 3-square shift to optimise your kick return position after seeing where the ball lands. The intercept-threat value forces opponents to plan passing routes around your OtB player's radius — a hidden strategic pressure.",
+  beats:["Setting up interception opportunities on opponents' pass routes","Optimising kick-off returns"],
+  beaten:["Cloud Burster (opponent passes without interception risk — OtB move still happens but serves no interception purpose)","3 squares is the limit — can't chase very long routes"],
+  synergy:["Very Long Legs","Diving Catch","Kick"]
+},
+{
+  name:"Pass", cat:"pas", type:"active",
+  rules:"This player may re-roll any failed Passing Ability Test when performing a Pass Action.",
+  analysis:"Pass gives a direct re-roll on any failed PA test when passing — the most important single skill for a dedicated Thrower. Without Pass, a failed pass roll causes a Turnover (fumble) or a scatter. With Pass, you eliminate the most common cause of passing game Turnovers. Note: Pass only re-rolls the Passing Ability Test itself, not interception or catch rolls. Essential on any player expected to throw regularly.",
+  beats:["Fumbles ending the turn (re-roll removes this risk)","Low-PA situations under marking pressure"],
+  beaten:["Interception rolls after a successful pass (Pass doesn't help here)","Catching failures at the other end"],
+  synergy:["Accurate","Nerves of Steel","Give and Go"]
+},
+{
+  name:"Punt", cat:"pas", type:"active",
+  rules:"This player may declare a Punt Special Action; only a single player may declare a Punt Special Action each Turn. When a player declares a Punt Special Action they are first allowed to make a Move Action, though they cannot continue to move after the Punt Special Action has been resolved.",
+  analysis:"Punt provides the Punt Special Action for a non-Hail-Mary-Pass player (Hail Mary Pass also grants this action). The Punt launches the ball high and far with deviation. Tactical use is the same as Hail Mary Pass — bomb the ball deep, chase it down, and convert field position into scoring chances. One Punt per turn.",
+  beats:["Pinning opponents deep with accurate Punts","Rapidly advancing field position"],
+  beaten:["Deviation makes exact targeting unreliable","Only one Punt per turn"],
+  synergy:["Hail Mary Pass","Kick","On the Ball"]
+},
+{
+  name:"Safe Pass", cat:"pas", type:"active",
+  rules:"If this player attempts a Pass Action and the Passing Ability Test is failed, the player may choose to not perform the Pass Action. This will not cause a Turnover, but the player's activation immediately ends.",
+  analysis:"Safe Pass prevents a failed pass from causing a Turnover — at the cost of ending the activation. If the PA test is failed, you simply don't pass and the ball stays in hand. Compared to Pass (which re-rolls the failure), Safe Pass is passive insurance. No Turnover from a failed pass is powerful on a Thrower who is the key activation piece — a Turnover can cost you the entire drive. The downside: activation ends, so the Thrower can't do anything else that turn.",
+  beats:["Fumble Turnovers on poor dice","High-risk passes that must be attempted"],
+  beaten:["Doesn't help with successful pass but poor catch","Activation ending means no follow-up movement or other actions"],
+  synergy:["Pass (use re-roll first, Safe Pass as final insurance)","Leader","Pro"]
+},
+
+// ── STRENGTH ─────────────────────────────────────────────────────────────
+{
+  name:"Arm Bar", cat:"str", type:"active",
+  rules:"When an opposition player attempts to Dodge, Jump or Leap away from a square in this player's Tackle Zone, a -1 modifier is applied to any Assists in the next Block Action the opposition player makes, for each player with this Skill they are leaving the Tackle Zone of.",
+  analysis:"Arm Bar applies a -1 assist penalty on the NEXT block the opponent makes after dodging away. It's cumulative with multiple Arm Bar players. The practical effect: opponents who dodge free of your Arm Bar player have reduced assist effectiveness on their next block. This is a niche debuff — useful in formations where your opponent's next action is a critical block, but it requires knowing they will block after dodging.",
+  beats:["Key opponent blocks that rely on assists to get the right dice count","Multiple Arm Bar players applied to the same dodging player (stacks -1 per player)"],
+  beaten:["Opponent not performing a Block Action after dodging (the penalty is wasted)","Stand Firm players don't dodge at all"],
+  synergy:["Guard","Block","Prehensile Tail"]
+},
+{
+  name:"Brawler", cat:"str", type:"active",
+  rules:"When this player performs a Block Action against a player with a lower Strength Characteristic (before any modifiers are applied to either player), this player may re-roll a single block dice if it shows a result that would Knock Down this player, but not the opposition player. This re-roll must only show the result of the single dice being re-rolled, not any combination of dice.",
+  analysis:"Brawler gives a re-roll on a single blocking die that went against you — but only when you are stronger than your target. On 2-die blocks (where you're choosing worst result for opponent), any one die can be re-rolled if it showed a self-harm result. This shores up the 'unlucky Both Down' or 'Skull' results on blocks where you should have the advantage. A reliable safety net for big guys hitting down who roll poorly.",
+  beats:["Skull and Both Down results when you're stronger","Bad dice runs when hitting weaker players"],
+  beaten:["Only fires when you're stronger — equal or lower strength and it doesn't apply","Only re-rolls ONE die — not the full dice pool"],
+  synergy:["Block","Mighty Blow","Guard"]
+},
+{
+  name:"Break Tackle", cat:"str", type:"active",
+  rules:"Once per Turn, when this player makes an Agility Test in order to Dodge, this player may use their Strength Characteristic instead of their Agility Characteristic to determine the target roll. Additionally, if this player is in possession of the ball, this player's Strength Characteristic is used instead of their Agility Characteristic to determine the target roll for all Agility Tests made in order to Dodge during this player's activation.",
+  analysis:"Break Tackle replaces AG with ST for Dodge tests. A ST4 player dodging uses a 3+ (like AG4), or a ST5 player uses a 2+. For big players with poor Agility, Break Tackle transforms them into surprisingly mobile pieces. Carriers with Break Tackle become very hard to mark down because their dodge roll may be better than expected. Once per turn for non-carriers; all dodges in activation for carriers.",
+  beats:["Marking big, slow players who can't normally dodge","Strength-agility mismatch pieces (ST4, AG5+ = poor dodge normally, BT makes it easy)"],
+  beaten:["Low ST means BT doesn't help if your AG is already better","Tackle (can't use Dodge re-roll when Tackled — BT still uses ST but re-roll is gone)"],
+  synergy:["Guard","Stand Firm","Sprint"]
+},
+{
+  name:"Bullseye", cat:"str", type:"active",
+  rules:"When this player performs a Throw Team-mate Action, this player may apply a +1 modifier to the Passing Ability Test. In addition, if this player successfully passes the Passing Ability Test, then the thrown player does not Deviate and lands in the target square.",
+  analysis:"Bullseye is the premier Throw Team-mate enhancement: on a successful PA test (with the +1 modifier), the thrown player lands EXACTLY in the target square — no deviation. This transforms Throw Team-mate from a risky bounce play into a surgical tool. A landing in a specific target square is devastating — throw your weapon directly on top of a key opponent. Every Throw Team-mate team wants Bullseye on their thrower.",
+  beats:["Random deviation ruining throw plays","Needing to land exactly on a specific opponent or square"],
+  beaten:["Failed PA test — the throw deviates as normal","Low PA on the thrower reduces the +1 effectiveness"],
+  synergy:["Throw Team-mate","Strong Arm","Lethal Flight"]
+},
+{
+  name:"Grab", cat:"str", type:"active",
+  rules:"When this player Pushes Back an opposition player for any reason (including as a result of a Blitz Action), this player's Coach may choose to move the Pushed Back player to any empty square adjacent to this player, rather than a square in the Pushed Back direction. A player with this Skill cannot also have the Frenzy Skill.",
+  analysis:"Grab controls where Pushed Back players land. Rather than pushing in the block direction, you place them in any adjacent empty square. This enables precision cage-breaking (push player into a heavily marked position) or crowd-pushing from angles that wouldn't normally work. The inability to combine with Frenzy is a notable restriction on some archetypes. Grab turns every Push Back into a powerful repositioning tool.",
+  beats:["Sidestep (Grab explicitly overrides normal Sidestep mechanics — the player's coach does NOT get to use Sidestep against Grab)","Engineering optimal positioning for follow-up blocks"],
+  beaten:["Stand Firm (opponent doesn't get pushed — Grab doesn't fire)","Frenzy incompatibility limits big-guy use"],
+  synergy:["Multiple Block","Guard","Block"]
+},
+{
+  name:"Guard", cat:"str", type:"active",
+  rules:"This player may use the Guard Skill to provide either an Offensive or a Defensive Assist for any Block Action regardless of how many opposition players are Marking this player.",
+  analysis:"Guard is the single most impactful skill in Blood Bowl. Normally a player can't assist if they're being marked by an opposing player. Guard ignores this entirely — you assist regardless of marking. This means a Guard player always contributes +1 strength to any adjacent block. Two Guard players = the opposition needs 2 players to cancel their assists. In practice, every team wants as many Guard pieces as possible. Guard is the foundation of all positional blocking strategy.",
+  beats:["Any tactic relying on cancelling assists through marking","Teams that lack Guard (you will always have assist advantages)"],
+  beaten:["Defensive (completely cancels Guard while the Defensive player Marks this player)","Guard players being knocked down or removed (a downed Guard is useless)"],
+  synergy:["Mighty Blow","Block","Stand Firm"]
+},
+{
+  name:"Juggernaut", cat:"str", type:"active",
+  rules:"When this player performs a Blitz Action, this player may treat a Both Down result as a Push Back result. In addition, when this player performs a Blitz Action, this player may ignore the Fend and Wrestle Skills. This Skill cannot be used against a player with the Ball & Chain Trait.",
+  analysis:"Juggernaut converts Both Down to Push Back on Blitz Actions AND ignores Fend and Wrestle. Both Down → Push Back means Block players who would normally neutralise your block with Block (since they wouldn't fall) now get pushed instead. Fend and Wrestle both commonly counter aggressive blocking — Juggernaut on a Blitz ignores both. A Juggernaut Blitzer is an irresistible force: both standard block defences (Block, Fend, Wrestle) are bypassed.",
+  beats:["Block (Both Down becomes Push — Block player still gets pushed)","Fend (ignored on Blitz)","Wrestle (ignored on Blitz)"],
+  beaten:["Ball & Chain Trait (explicitly excluded)","Dauntless (player can still try to match your strength, and Juggernaut doesn't prevent that)","Stand Firm (player doesn't get pushed)"],
+  synergy:["Mighty Blow","Frenzy","Guard"]
+},
+{
+  name:"Mighty Blow", cat:"str", type:"active",
+  rules:"When an Armour Roll or Injury Roll is made for an opposition player that has been Knocked Down by this player, this player may apply a +1 modifier to either the Armour Roll or Injury Roll. This modifier may be applied after the roll has been made.",
+  analysis:"+1 to either armour or injury rolls after seeing the result — this is the most common offensive skill in competitive Blood Bowl. You always apply it optimally: if armour is low roll, add to armour; if armour breaks, add to injury. Combined with Claws, the combination threatens ALL armour values. Mighty Blow turns borderline outcomes into cracked armour and borderline injury rolls into Casualties. Every bash team's first skill choice.",
+  beats:["High-AV players (the +1 to armour makes 8+ or 9+ achievable where it would normally fail)","Marginal injury rolls — turns Stunned into Knocked Out, KO into Casualty"],
+  beaten:["Iron Hard Skin (armour roll modifiers cannot be applied — the armour portion of Mighty Blow is wasted)","Regeneration (casualty results can be regenerated away)"],
+  synergy:["Claws","Block","Guard"]
+},
+{
+  name:"Multiple Block", cat:"str", type:"active",
+  rules:"When this player performs a Block Action, this player may perform two Block Actions against two different adjacent opposition players rather than one. Both Block Actions are resolved in the order this player's Coach chooses. A player with this Skill cannot also have the Frenzy Skill.",
+  analysis:"Multiple Block allows blocking two separate adjacent opponents in one activation. This is an elite positional skill — you can simultaneously threaten two players, clear two tackle zones, or push two pieces out of a cage. The obvious limitation is you need to be adjacent to two opponents. Cannot combine with Frenzy (both enhance blocking at the expense of each other). In the right position, Multiple Block turns one activation into extraordinary board control.",
+  beats:["Packed cages where multiple opponents are adjacent","Situations where you need to move two pieces to open a scoring lane"],
+  beaten:["Needing to be adjacent to two opponents (positioning requirement)","Frenzy incompatibility — can't have both","Single-die blocks on both targets means poor dice can Turnover twice as fast"],
+  synergy:["Guard","Grab","Block"]
+},
+{
+  name:"Stand Firm", cat:"str", type:"active",
+  rules:"Whenever this player is Pushed Back for any reason, then instead of being Pushed Back, this player may choose to remain in their current square. If this player chooses to remain in their current square, they are not moved, and this player may not be Pushed Back into the crowd, and the player pushing them may not Follow-up.",
+  analysis:"Stand Firm prevents Push Back entirely — you simply stay put. No Push Back means Frenzy chains are broken (if you're not knocked down), crowd pushes are impossible, and your line never shifts. The no-Follow-up clause means even Block-and-push plays can't reposition your defender. Stand Firm is the foundation of defensive lines and anchor positions. An entire Frenzy player's extra block is denied if you Stand Firm and they only pushed you.",
+  beats:["Frenzy second block (if you don't go down on first, Stand Firm stops Follow-up, breaking Frenzy's chain)","Crowd push attempts","Formation-breaking push plays"],
+  beaten:["Knockdowns still move you (only Push Back is prevented — POW and Stumble to KD aren't affected by Stand Firm)","Grab (moves you to an adjacent square rather than 'pushing' — Stand Firm may not negate Grab per ruling)"],
+  synergy:["Guard","Block","Mighty Blow"]
+},
+{
+  name:"Strong Arm", cat:"str", type:"active",
+  rules:"When this player performs a Throw Team-mate Action, this player may apply a +1 modifier to the Passing Ability Test.",
+  analysis:"+1 to Throw Team-mate PA tests. Where Bullseye removes deviation on success, Strong Arm makes success more likely. A Troll or Ogre with Strong Arm passes the throw at a higher rate, reducing fumble risk. Strong Arm is the baseline reliability improvement for Throw Team-mate; Bullseye is the precision improvement. They can stack for a highly reliable, accurate throwing game.",
+  beats:["Poor PA on big guys making Throw Team-mate unreliable","Throw Team-mate fumbles ending the turn"],
+  beaten:["Doesn't eliminate deviation — that's Bullseye's job","Only helps the PA test, not the landing roll"],
+  synergy:["Bullseye","Throw Team-mate Trait","Lethal Flight"]
+},
+{
+  name:"Thick Skull", cat:"str", type:"passive",
+  rules:"If the result of an Injury Roll made against this player (after any modifiers are applied) would be Knocked Out, this player is Stunned instead.",
+  analysis:"Thick Skull converts KO results to Stunned. This is enormously important: Knocked Out means you roll to recover at halftime — roughly 50% chance of missing the second half. Stunned is just a brief delay and you return next turn. Thick Skull players almost never miss time from injuries short of an actual Casualty. High-value, expensive players enormously benefit from Thick Skull since their absence from the field costs the most.",
+  beats:["KO results from injury rolls","Attrition warfare — Thick Skull players stay on the pitch"],
+  beaten:["Casualty results still apply fully — Thick Skull doesn't help against Casualties","Mighty Blow can push an otherwise-KO result to a Casualty, bypassing Thick Skull entirely"],
+  synergy:["High AV players","Iron Hard Skin","Stand Firm"]
+},
+
+// ── TRAITS ────────────────────────────────────────────────────────────────
+{
+  name:"Always Hungry", cat:"trait", type:"active", compulsory:true,
+  rules:"If this player wishes to perform a Throw Team-mate Action, they must first roll a D6. On a 2+, they may proceed with the Throw Team-mate Action as normal. On a 1, they attempt to eat the player they are trying to throw and the Throw Team-mate Action is resolved but the thrown player lands in the same square as the player performing the Always Hungry roll. The thrown player is immediately Placed Prone in the square and an Armour Roll is made against them.",
+  analysis:"Always Hungry is a liability on Throw Team-mate plays — 1-in-6 chance of eating your own teammate. The eaten player takes an armour roll and goes prone in your square. Planning around this means either accepting the risk or having re-rolls available. In leagues, experienced Coaches either avoid throwing with Always Hungry players or accept the occasional catastrophe as part of the character of their big guy.",
+  beats:["Nothing — Always Hungry is purely a downside"],
+  beaten:["Throw Team-mate plans (1-in-6 self-harm)"],
+  synergy:["Strong Arm (makes the throw succeed more often after the AH roll passes)","Pro (re-roll the AH roll on 3+)"]
+},
+{
+  name:"Animal Savagery", cat:"trait", type:"passive", compulsory:true,
+  rules:"Whenever this player is activated, after declaring their action, they must roll a D6, adding 1 to the roll if they declared a Block Action or a Blitz Action. On a 1, this player loses their mind and will turn on their own team. They will immediately perform a Block Action against one randomly-determined Standing team-mate they are Marking or, if they are not Marking any team-mate, they will move towards and attempt to Mark the nearest team-mate before performing a Block Action against them. Once the Block Action against a team-mate has been resolved, this player's activation ends. On a 2-6 (or on a 2-5 if they did not declare a Block or Blitz Action), this player may continue their activation as normal.",
+  analysis:"Animal Savagery has a 1-in-6 chance (improved on Block/Blitz) to attack your own team. Keeping the player isolated from teammates reduces the trigger chance (no adjacent teammates = moves toward nearest, which adds predictability). Design around AS: activate these players last so a Savagery result doesn't cascade into disrupting other activations. The +1 on Block/Blitz declarations makes them slightly safer to use aggressively.",
+  beats:["Nothing — pure downside management trait"],
+  beaten:["Any game plan that needs reliable activation"],
+  synergy:["Pro (can re-roll the Savagery roll)","Activate last in team turn"]
+},
+{
+  name:"Animosity (X)", cat:"trait", type:"active", compulsory:true,
+  rules:"When this player wishes to perform a Hand-off Action to a team-mate of the type specified, or when a team-mate of the type specified wishes to perform a Hand-off Action to this player, you must first roll a D6. On a 2+, the Hand-off Action may be performed as normal. On a 1, the Hand-off Action is not made and the player's activation ends, but no Turnover is caused.",
+  analysis:"Animosity is a race-relation penalty between specific player types on mixed teams (e.g. Orcs refusing to hand off to Goblins). A 1-in-6 chance to simply refuse a hand-off and end the activation. It prevents the hand-off but doesn't cause a Turnover, at least. Design passing plays to avoid triggering Animosity — use Pass Actions instead of Hand-offs when the receiver is the disliked type, or route around Animosity pairings.",
+  beats:["Nothing — pure downside"],
+  beaten:["Hand-off strategies on mixed teams","Coordination between affected player types"],
+  synergy:["Pass (avoids triggering Animosity by using Pass instead of Hand-off)"]
+},
+{
+  name:"Ball & Chain", cat:"trait", type:"active", compulsory:true,
+  rules:"A player performing a Ball & Chain Special Action can move a number of squares up to their MA. They may Rush as normal, though if they roll a 1, they will move into the square as normal first, including performing any Block Actions, Pushing Back any players or causing the ball to Bounce, before Falling Over in the square they have moved into. If a player is Knocked Down, Falls Over or Placed Prone for any reason, immediately make an Injury Roll for them treating any result of Stunned as Knocked-out instead. A player with this Trait cannot have any of the following Skills: Diving Tackle, Eye Gouge, Frenzy, Grab, Hit & Run, Leap, Multiple Block, On the Ball, Shadowing, Steady Footing.",
+  analysis:"Ball & Chain is an unstoppable chaos piece — it moves, blocks anything in its path, and ignores Fend. The massive downside: if knocked down, immediate injury roll (Stunned becomes KO). This piece is a high-risk brawler. It explicitly bypasses Fend and can't be stopped by it. A huge list of skills are incompatible. Play it as a disruptive piece aimed at enemy formations — not something to protect.",
+  beats:["Fend (Ball & Chain bypasses it)","Defensive lines — plows through regardless of positioning"],
+  beaten:["ANY knockdown causes immediate injury","Extremely restrictive skill list"],
+  synergy:["Mighty Blow","Block","Pro (for Rush rolls)"]
+},
+{
+  name:"Bloodlust (X+)", cat:"trait", type:"passive", compulsory:true,
+  rules:"Whenever this player is activated, after declaring their action, they must roll a D6. If the roll is equal to or higher than the number shown in brackets, then this player may activate as normal. If the roll is lower than the number shown, this player must make a Bite Special Action against an adjacent team-mate (if any) or end their activation (if none). If a Bite Special Action was made against a team-mate and caused a Casualty (including after Regeneration), this player's Bloodlust is satisfied and they may continue their activation as normal. Otherwise their activation ends.",
+  analysis:"Bloodlust is the Vampire race's defining trait — they must roll X+ or bite a teammate. Failed roll with no adjacent teammate = wasted activation. Successful Bite Casualty = satisfied and activated normally. Managing Vampires means keeping disposable thralls nearby as 'snacks' for failed Bloodlust rolls. A Vampire coach intentionally positions Thralls (cheap human players) adjacent to their key Vampires as sacrifice outlets.",
+  beats:["Nothing — pure downside management trait"],
+  beaten:["Any key Vampire being unreliable for 1-2 turns per game"],
+  synergy:["Regeneration on Thralls is unavailable — but cheap Thralls serve as backup bites","Pro (re-roll the Bloodlust roll)"]
+},
+{
+  name:"Bombardier", cat:"trait", type:"active",
+  rules:"This player may declare a Throw Bomb Special Action; there is no limit to the number of players that can declare this Special Action each Turn. When this player declares a Throw Bomb Special Action, they may choose to perform a Move Action first, as though they were performing a Move Special Action. After completing the Move Action (if any), this player may throw a bomb following the rules for throwing a bomb as described in the Throwing Bombs rules.",
+  analysis:"Bombardier allows Throw Bomb actions without limit per turn — multiple bombers can throw in the same turn. Bombs cause scatter damage, forcing knockdowns on affected squares. The chaos value of multiple bombs detonating in an opponent's formation is high. Secret Weapon means Bombardiers are sent off at half time unless bribed. Use them aggressively in the first half to maximise value before the half-time ejection.",
+  beats:["Packed formations — bomb scatter hits multiple players","No limit on how many can throw per turn — stack Bombardiers for maximum chaos"],
+  beaten:["Secret Weapon — sent off at half time","Bomb scatter is random — can hit your own players"],
+  synergy:["Violent Innovator","Secret Weapon Trait (accepted cost)","Bribes (inducement — keeps them on field)"]
+},
+{
+  name:"Bone Head", cat:"trait", type:"passive", compulsory:true,
+  rules:"Whenever this player is activated, after declaring their action, they must roll a D6. On a 1, this player forgets what they are supposed to be doing and becomes Distracted until the end of this player's next activation. On a 2+, this player may continue their activation as normal.",
+  analysis:"Bone Head means 1-in-6 activations are wasted on a big guy. When Distracted, the player has no Tackle Zone and can't use Active Skills or Traits. Critically, they also cannot attempt to Catch the ball while Distracted. Design around Bone Head by activating these players early in your turn so a failure doesn't prevent critical actions, or last if they're providing Guard (they still provide a Tackle Zone while not Distracted).",
+  beats:["Nothing — pure downside"],
+  beaten:["Any plan dependent on reliable big guy activation"],
+  synergy:["Pro (re-roll the Bone Head roll on 3+)","Activate at the start of the turn before critical blocks"]
+},
+{
+  name:"Breathe Fire", cat:"trait", type:"active",
+  rules:"This player may declare a Breathe Fire Special Action; there is no limit to the number of players that can declare this Special Action each Turn. When this player declares a Breathe Fire Special Action, they may choose to perform a Move Action first, as though they were performing a Move Special Action. After completing the Move Action (if any), this player can Breathe Fire following the Breathe Fire rules.",
+  analysis:"Breathe Fire allows a template-based fire breath attack — knocking down players and applying fire effects in a line or area. As with Bombardier, the unlimited use per turn allows multiple fire breathers to act in sequence. Unique to Dragon Ogres and specific fantasy models. Functions similarly to Bombardier in terms of Secret Weapon risk (check the specific player profile for Secret Weapon). High chaos, high entertainment.",
+  beats:["Multiple opponents in a line or area","Soft-armoured packed formations"],
+  beaten:["Scatter can hit your own players","Secret Weapon on specific profiles"],
+  synergy:["Violent Innovator","Multiple use per turn synergy with other Breathe Fire players"]
+},
+{
+  name:"Chainsaw", cat:"trait", type:"active", compulsory:true,
+  rules:"This player may declare a Chainsaw Special Action; there is no limit to the number of players that can declare this Special Action each Turn. When this player declares a Chainsaw Special Action, they may choose to perform a Move Action first, as though they were performing a Move Special Action. After completing the Move Action (if any), this player may attack with their Chainsaw following the Chainsaw Attack rules.",
+  analysis:"Chainsaw replaces block dice with a direct armour roll at +3 — it's a power tool, not a skill. No block dice means no Skulls, no Both Down — just an armour roll. Against any player, Chainsaw has consistent injury potential regardless of strength differences. The tradeoff: if the Chainsaw player is blocked, they also suffer an armour roll at +3 from the kickback. Secret Weapon means they're ejected at half time.",
+  beats:["High-ST players immune to normal blocks","Targeting armour regardless of strength matchup"],
+  beaten:["Kickback if hit while activating — own player takes +3 armour roll","Secret Weapon — half time ejection","Foul Appearance can cancel the action before it resolves"],
+  synergy:["Violent Innovator","Mighty Blow","Bribes inducement"]
+},
+{
+  name:"Decay", cat:"trait", type:"passive", compulsory:true,
+  rules:"If an Injury Roll is ever made against this player, a roll of 2-7 on the Injury Table will result in this player being Badly Hurt, a roll of 8-9 will result in a Serious Injury, and a roll of 10-12 will result in a Death.",
+  analysis:"Decay removes the 'Stunned' and 'Knocked Out' options from the Injury Table — every injury is at minimum Badly Hurt (miss next game). This makes Decay players extremely fragile against heavy-hitting teams: Mighty Blow + Claws on your Decay players is basically a guaranteed miss or worse. Nurgle Warriors have Decay. Managing them means keeping them out of the firing line of Claw-equipped teams.",
+  beats:["Nothing — pure downside"],
+  beaten:["Mighty Blow + Claws combinations — every injury is severe","Any high-damage opponent"],
+  synergy:["Regeneration (if a Decay player also has Regen — Nurgle Warriors have Regeneration — this partially offsets Decay by allowing recovery rolls)"]
+},
+{
+  name:"Drunkard", cat:"trait", type:"passive", compulsory:true,
+  rules:"Whenever this player is activated, after declaring their action, they must Roll a D6. On a 1-2, they immediately become Distracted until the end of this player's next activation. On a 3-6 they may continue their activation as normal.",
+  analysis:"Drunkard has a 2-in-6 (33%) chance of Distraction — significantly worse than Bone Head (1-in-6) or Really Stupid (1-in-6 independently or 1-3 without adjacent teammate). Drunkard players are unreliable third of the time. They're exclusively found on Halfling teams (Master of Disguise). The high fail rate means never relying on them for critical actions.",
+  beats:["Nothing — pure downside"],
+  beaten:["Any critical activation — 33% failure rate is severe"],
+  synergy:["Pro (re-roll on 3+, helping offset)","Used for disruption where even partial activation has value"]
+},
+{
+  name:"Hatred (X)", cat:"trait", type:"passive", compulsory:true,
+  rules:"Whenever this player performs a Block Action against a player of the type specified, this player may re-roll a single dice in the Block Dice pool. Additionally, whenever this player attempts to Foul a player of the type specified, they may re-roll a single dice in the Armour Roll.",
+  analysis:"Hatred provides a free block dice re-roll and a foul armour re-roll specifically against the hated player type. It's a race-match advantage — exactly the kind of asymmetry that Blood Bowl's lore runs on. The block re-roll on the best die of a 2-die block against the hated type is very strong. Check specific team profiles to know who they hate — typically Elves hating certain races, or Orcs hating Gobbos, etc.",
+  beats:["The targeted player type — reliable extra block dice re-roll","Fouling hated types — extra armour insurance"],
+  beaten:["Useless against other player types","Still limited to one re-roll per action"],
+  synergy:["Block","Mighty Blow","Dirty Player"]
+},
+{
+  name:"Hypnotic Gaze", cat:"trait", type:"active",
+  rules:"When this player is activated, this player may declare a Hypnotic Gaze Special Action; there is no limit to the number of players that can declare this Special Action each Turn. When a player declares a Hypnotic Gaze Special Action, they may choose to perform a Move Action first, as though they were performing a Move Special Action. After completing the Move Action (if any), this player may make a Hypnotic Gaze Action against one adjacent opposition player. Roll a D6. On a 4+, the opposition player loses their Tackle Zone until the end of the opposing team's next Turn.",
+  analysis:"Hypnotic Gaze removes a player's Tackle Zone on 4+ — until end of the opponent's NEXT turn. Removing Tackle Zones is powerful: the affected player can no longer assist, can no longer threaten dodges, and is effectively invisible to pass routes. Use this on the opponent's key Guard pieces before executing blocks — remove their Tackle Zone, then block adjacents who no longer get Guard assist.",
+  beats:["Key Guard players (remove their Tackle Zone, removing their Guard contribution)","Players blocking pass routes (remove their TZ to open lanes)"],
+  beaten:["4+ fail rate — misses 50% of the time","Only one adjacent player per action"],
+  synergy:["Block","Guard","Disturbing Presence"]
+},
+{
+  name:"Insignificant", cat:"trait", type:"passive", compulsory:true,
+  rules:"This player cannot be the target of a Throw Team-mate Action, even if they also have the Right Stuff Trait.",
+  analysis:"Insignificant prevents being thrown — even if the player also has Right Stuff. On Snotling teams, Insignificant appears on specific player types, limiting the team's Throw Team-mate options to only non-Insignificant Right Stuff players. It doesn't affect anything else the player can do; it only restricts other players' ability to throw them.",
+  beats:["Nothing — pure restriction"],
+  beaten:["Throw Team-mate strategies that rely on throwing this player type"],
+  synergy:["N/A — a restriction, not a tool"]
+},
+{
+  name:"Kick Team-Mate", cat:"trait", type:"passive",
+  rules:"When a player with this Trait performs a Throw Team-mate Action, this player may use the Throw Team-mate rules as described in the official rules, kicking the team-mate instead of throwing them.",
+  analysis:"Kick Team-Mate appears on Snotling Pump Wagons — they kick rather than throw teammates. Functionally this works the same as Throw Team-mate per the standard rules. The flavour distinction matters only if specific rules differentiate Kick from Throw in particular scenarios (check the full rules). Treat it as Throw Team-mate for most tactical purposes.",
+  beats:["Standard throw team-mate application"],
+  beaten:["Same limitations as Throw Team-mate"],
+  synergy:["Bullseye","Strong Arm","Right Stuff"]
+},
+{
+  name:"Loner (X+)", cat:"trait", type:"passive", compulsory:true,
+  rules:"When this player wishes to use a Team Re-roll, they must first roll a D6. If the result is equal to or higher than the number shown in brackets, this player may use the Team Re-roll as normal. If the result is lower, the re-roll is wasted but no Team Re-roll is lost from the team's pool.",
+  analysis:"Loner means using a Team Re-roll requires passing an X+ roll first. On Loner (4+) — the most common variant — you need a 3+ on D6 to use a re-roll. Failed roll wastes the action but doesn't cost the Team Re-roll. The wasted action cost is the penalty. Mercenaries and Star Players universally have Loner. Build teams around not needing to re-roll Loner players — give them Pro or skills that provide their own re-rolls.",
+  beats:["Nothing — pure downside"],
+  beaten:["Team re-roll economy — wastes the intended re-roll action if the Loner roll fails"],
+  synergy:["Pro (own re-roll mechanism — doesn't use Team Re-rolls so Loner doesn't apply)","Accurate / Pass (skill-based re-rolls bypass Loner)"]
+},
+{
+  name:"My Ball", cat:"trait", type:"passive", compulsory:true,
+  rules:"If this player attempts to Catch the ball and fails, they do not drop the ball. Instead, the ball remains in this player's possession and the play continues without a Turnover.",
+  analysis:"My Ball overrides the normal failed catch rule — instead of the ball bouncing and potentially causing a Turnover, this player just... keeps the ball (or rather, doesn't drop it on a failed Catch). This means if someone passes to this player and they fail the Agility Test, the ball stays put rather than bouncing. This is an unusual anti-Turnover protection for catching.",
+  beats:["Turnover from a failed Catch","Ball bouncing away from an important position"],
+  beaten:["The player still failed the Catch — they don't gain the ball in the normal sense, they just don't cause a Turnover","Opponent blocking may still dislodge the ball"],
+  synergy:["Catch (combined: re-roll, and if still fail, My Ball saves turnover)","Safe Pair of Hands"]
+},
+{
+  name:"No Ball", cat:"trait", type:"passive", compulsory:true,
+  rules:"This player refuses to carry the ball in any way. They may not pick up the ball, and if they are ever in possession of the ball for any reason, they will immediately drop it (causing it to Bounce from their square). This will not cause a Turnover.",
+  analysis:"No Ball is an absolute restriction — this player will never interact with the ball constructively. Any scenario where the ball lands on them or they'd pick it up results in a Bounce. In a game built around ball possession, No Ball players are purely utility: Guards, Blockers, Foulers. Do not build ball-retrieval plans around them and avoid accidentally bouncing the ball into their path during a crucial drive.",
+  beats:["Nothing — pure restriction"],
+  beaten:["Any ball-handling role"],
+  synergy:["Guard","Block","Mighty Blow — all pure bash skills that don't need ball interaction"]
+},
+{
+  name:"Pick-me-up", cat:"trait", type:"active",
+  rules:"When a team-mate with this Trait is Knocked Down or Falls Over adjacent to this player, this player may immediately move the knocked-down or fallen-over player to any unoccupied adjacent square. This move does not count as a Push Back.",
+  analysis:"Pick-me-up is a unique teammate-repositioning Trait — when an adjacent teammate goes down, you can instantly move them to a nearby square. This is primarily used on teams where teammates have interesting effects on being placed (e.g. moving a Stunned player to a safer position, or exploiting mechanical interactions). It doesn't count as a Push Back, so Sidestep, Stand Firm, and Fend don't interfere.",
+  beats:["Poor positioning of fallen teammates","Repositioning a downed player before opponents can foul them"],
+  beaten:["The moved player is still Prone — their status doesn't change, only their location"],
+  synergy:["Teams with Pile Driver or other prone-placement tactics"]
+},
+{
+  name:"Plague Ridden", cat:"trait", type:"passive",
+  rules:"If any opposition player suffers a Casualty result from a Block Action performed by this player, the coach of the team with the Plague Ridden player may choose to add a Rotter Lineman to their team. This Rotter Lineman is immediately placed in the Reserves Box and may be used for the remainder of the current game. If the team already has 16 players on their Team Roster, the Rotter Lineman cannot be added.",
+  analysis:"Plague Ridden adds a free Rotter to your reserves when you Casualty someone. Over a game, this compounds: Casualty 2-3 players and you've added 2-3 free bodies, potentially winning the attrition war. Combined with high-damage builds (Mighty Blow + Claws), Plague Ridden creates exponential manpower advantage the more damage you deal.",
+  beats:["Attrition games where body count matters","Opponent having low team value and few re-fills available"],
+  beaten:["Only adds Rotters (disposable linemen) — not powerful players","Capped at 16 players total"],
+  synergy:["Mighty Blow","Claws","Decay on opponents (maximises Casualty triggers)"]
+},
+{
+  name:"Pogo", cat:"trait", type:"active",
+  rules:"During their Move Action, this player can attempt to Pogo, which follows all the same rules as Jumping over players, with the following exceptions: This player may reduce the negative modifiers they would receive by Pogo-ing by 2 (to a minimum of 0). A player with this Trait cannot also have the Leap Skill.",
+  analysis:"Pogo is an upgraded Jump — you reduce negative modifiers by 2 (vs Leap's 1), to a minimum of 0. This means even jumping into a square with two Tackle Zones has no negative modifier. Pogo players are extremely mobile cage-busters — they land in enemy squares with no penalty. The incompatibility with Leap means you have to choose (Pogo is generally superior for the same purpose).",
+  beats:["Cage formations — land directly inside with zero penalty","Tight defensive lines"],
+  beaten:["Agility Test is still required (even at +0 modifier, a low AG player may fail)","Foul Appearance can cancel actions targeting players you want to Pogo toward"],
+  synergy:["Very Long Legs (adds +1 to jump/leap — Pogo also benefits from this when jumping)","Block","Dodge"]
+},
+{
+  name:"Projectile Vomit", cat:"trait", type:"active",
+  rules:"This player may declare a Projectile Vomit Special Action; there is no limit to the number of players that can declare this Special Action each Turn. When this player declares a Projectile Vomit Special Action, they may choose to perform a Move Action first, as though they were performing a Move Special Action. After completing the Move Action (if any), this player may Projectile Vomit following the Projectile Vomit rules.",
+  analysis:"Projectile Vomit makes an attack against one adjacent player without using block dice — instead applying an Armour Roll modifier based on the roll. It's particularly powerful against strong, hard-to-block players where block dice disadvantages are unacceptable. Like most special action attacks, check the specific Vomit rules for exact mechanics. On Great Unclean Ones, PV is a genuine threat-at-range weapon.",
+  beats:["High-ST players immune to normal 1-die blocks","Providing a non-block action that still physically threatens"],
+  beaten:["Agility-test or other roll still required — not automatic success"],
+  synergy:["Violent Innovator","Mighty Blow (if modifiers stack)"]
+},
+{
+  name:"Really Stupid", cat:"trait", type:"passive", compulsory:true,
+  rules:"Whenever this player is activated, after declaring their action, they must roll a D6. On a 1-3, if this player is not currently Marking an opposition player or being Marked by one, this player becomes Distracted until the end of this player's next activation and their activation immediately ends. On a 4+, or if this player is currently Marking an opposition player or is being Marked by one, this player may continue their activation as normal.",
+  analysis:"Really Stupid is better than Bone Head when engaged (Marking or Marked cancels the Stupid roll). Against opponents, if your Stupid player is adjacent to an enemy, they auto-succeed. Design your positioning so Really Stupid players are almost always adjacent to an opponent — this effectively removes the liability in contact. In your backfield without opponents near, they'll go Stupid 50% of the time.",
+  beats:["Nothing — pure downside, but manageable"],
+  beaten:["Being in your own backfield with no opponents nearby — 1-3 on D6 fails"],
+  synergy:["Pro (re-roll the Stupid roll)","Engage immediately — being Marked/Marking removes the check"]
+},
+{
+  name:"Regeneration", cat:"trait", type:"passive",
+  rules:"If an Injury Roll for this player ever results in them being Badly Hurt, Seriously Injured or Killed, this player may attempt to Regenerate. Roll a D6. On a 4+, this player's injuries heal and they are placed in their team's Reserves box. On a 1-3, this player cannot Regenerate and the Injury Roll stands.",
+  analysis:"Regeneration is the strongest long-term survival trait. Any non-Stunned/KO injury (Badly Hurt, Serious, Kill) triggers a 4+ save to come back. Effectively 50% immunity to permanent injury. Expensive players with Regeneration (Nurgle Warriors, Vampires, Undead pieces) are significantly more cost-effective over a league because their injury insurance saves gold and maintains the roster.",
+  beats:["Permanent casualties that would cost gold to replace","Decay players (Nurgle Warriors have both — Decay makes every injury severe, Regen tries to recover from it)"],
+  beaten:["1-3 (50% fail rate) means they still die half the time","Stunned and Knocked Out injuries don't trigger Regen"],
+  synergy:["Decay (necessary on Nurgle Warriors — together they define that playstyle)","High-value expensive players"]
+},
+{
+  name:"Right Stuff", cat:"trait", type:"passive",
+  rules:"A player with this Trait may be thrown by a team-mate with the Throw Team-mate Trait following the rules for throwing a player. A player with the Insignificant Trait cannot be thrown even if they have this Trait.",
+  analysis:"Right Stuff enables a player to be thrown via Throw Team-mate. It's the enabling condition for one of Blood Bowl's most chaotic plays: throwing a small player deep downfield (usually a Goblin or Snotling) to score, foul from air, or cause mayhem. The Insignificant override is a hard stop — Insignificant players cannot be thrown even with Right Stuff.",
+  beats:["Defense that can't reach the thrown player in time to mark them","Setting up a TD from a throw"],
+  beaten:["Insignificant Trait (explicit override — can't be thrown)","Always Hungry eating the thrower's own teammate","Landing rolls — scatter can dump the player anywhere"],
+  synergy:["Throw Team-mate","Bullseye","Lethal Flight"]
+},
+{
+  name:"Secret Weapon", cat:"trait", type:"passive", compulsory:true,
+  rules:"At the end of any Drive in which this player took part, even if they were not on the pitch for the whole drive, the opposing coach may attempt to have this player Sent-off. To do so, the opposing coach rolls a D6. On a 2+, this player is Sent-off for the remainder of the game. On a 1, the player is not Sent-off.",
+  analysis:"Secret Weapon means the opponent gets a 2+ roll after the drive to send you off permanently. This severely limits how you use SW players: get maximum value in the first drive (half), knowing they're almost certainly gone after. Common Secret Weapon players are Chainsaws, Bombardiers, and Pogoers. Budget for buying Bribes (an Inducement) to protect them, but even with a Bribe you only delay by one roll.",
+  beats:["Nothing — pure downside management"],
+  beaten:["Opponent's 2+ send-off roll is extremely reliable — budget for loss after the first drive"],
+  synergy:["Bribes inducement (prevents one send-off per bribe)","Use in first drive aggressively before inevitable ejection"]
+},
+{
+  name:"Stab", cat:"trait", type:"active",
+  rules:"When this player performs a Stab Special Action, they do not use Block dice. Instead, a Stab is resolved by making a single Armour Roll with a +1 modifier against the target player. If the Armour Roll succeeds, make an Injury Roll with a +1 modifier. If the Armour Roll fails, this player is Knocked Down in their current square and an Armour Roll is made against them. However, a Turnover is not caused unless this player was in possession of the ball.",
+  analysis:"Stab bypasses Block dice entirely: armour roll +1, and if it breaks, injury +1. But if the armour roll fails, the Stab player goes down. This makes Stab a high-variance attack. Against heavily armoured players, Stab is generally inferior (a block die gives more options). Against lightly armoured players, Stab reliably inflicts injury. Secret Weapon usually accompanies Stab players (Assassins). Use Stab for targeted assassinations against key low-AV pieces.",
+  beats:["Strength matchups (Stab ignores block dice, so ST difference is irrelevant)","Low-AV priority targets — efficient removal"],
+  beaten:["Failed armour roll makes YOU go down — risky against high-AV","Secret Weapon usually accompanies Stab — half-time ejection"],
+  synergy:["Violent Innovator","Dirty Player","Hit and Run (escape after Stab)"]
+},
+{
+  name:"Stunty", cat:"trait", type:"passive", compulsory:true,
+  rules:"When this player makes an Agility Test to Dodge, they apply a -1 modifier to the dice roll. In addition, any player making a Block Action against this player may re-roll a single dice of their choosing when rolling the Block dice. Additionally, this player may ignore intervening players when tracing lines of sight for the purposes of drawing corridors for passing in any direction.",
+  analysis:"Stunty is a mixed bag: -1 to dodge tests AND opponents get a block dice re-roll against you. Stunty players are squishy and dodgy simultaneously. The corridor sight bonus is minor but occasionally useful for bounce-pass plays through crowds. Stunty players are inherently fragile and should be positioned to avoid direct blocks where possible. Their strength lies in numbers, fouling, and chaos rather than surviving hits.",
+  beats:["Pass sight corridors through dense lines (niche but occasionally relevant)"],
+  beaten:["Every block against you has a free re-roll — high injury risk","Dodge penalty (-1) means even dodging away is unreliable"],
+  synergy:["Sneaky Git (fouling identity)","Dodge (partially offsets the -1 Stunty penalty)","Titchy (niche positional tool)"]
+},
+{
+  name:"Swoop", cat:"trait", type:"active",
+  rules:"When this player is thrown as part of a Throw Team-mate Action, this player may choose where they land rather than the throw deviating as normal. When using this Skill, this player must land on a valid square within the Range of the throw, following all the normal rules for landing.",
+  analysis:"Swoop is Bullseye from the thrown player's perspective — the thrown player chooses their landing square within range, eliminating deviation. Unlike Bullseye (which is on the thrower), Swoop is on the thrown player. Combined, they create double landing certainty. Swoop players are self-directing projectiles — throw them, they land exactly where needed. Scoring from a throw becomes deterministic within the range limit.",
+  beats:["Deviation risk from Throw Team-mate","Needing precision placement when thrown"],
+  beaten:["Must land within the throw's Range — long throws still limited by distance","Landing roll still required — high AG needed for reliable landings"],
+  synergy:["Bullseye (combined = maximum throw precision)","Strong Arm","Right Stuff"]
+},
+{
+  name:"Take Root", cat:"trait", type:"passive", compulsory:true,
+  rules:"Whenever this player is activated, after declaring their action, they must roll a D6. On a 1, this player becomes Rooted. A Rooted player cannot move, and cannot perform any action that includes a Move or a Special Action, but may still perform Block and Foul Actions. Additionally, a Rooted player cannot be pushed in any direction for any reason, and are therefore immune to being pushed into the crowd. A player that has been Rooted will remain Rooted until they are Activated again, at which point they may attempt to Uproot themselves by rolling a D6. On a 2+, they become un-Rooted. On a 1, they remain Rooted.",
+  analysis:"Take Root on a 1-in-6 means the player becomes immovable but also immobile. Rooted players can Block and Foul but not move. The immunity to pushes while Rooted is a significant defensive upside: they cannot be crowd-pushed, cannot be Grabbed, and Sidestep/Stand Firm are irrelevant since they won't move anyway. A Rooted Tree-man is an immovable Guard anchor — annoying rather than disabled on defence.",
+  beats:["Crowd push attempts (Rooted = immune to being pushed into crowd)","The player still provides Tackle Zones and can Block — functional on defence"],
+  beaten:["Any plan requiring the player to move","Uprooting still fails 1-in-6 — can be stuck multiple turns"],
+  synergy:["Guard (a Rooted Guard player is still providing assists — maximum value from zero mobility)","Block"]
+},
+{
+  name:"Throw Team-Mate", cat:"trait", type:"active",
+  rules:"Once per turn, this player may perform a Throw Team-mate Action, following the rules for throwing a player. A player with this Trait that also has the Kick Team-mate Trait will kick rather than throw their team-mate.",
+  analysis:"Throw Team-mate is one of Blood Bowl's most unique mechanics. A big guy with TTM can launch a Right Stuff player across the pitch — scoring from seemingly impossible positions, assassinating key opponents, or fouling from the air. The TTM action follows PA rules with its own modifiers. The threat of TTM forces opponents to consider deep coverage even on short drives. Always Hungry complicates the use of TTM for its owner.",
+  beats:["Short-reach defences (throw over the top)","Impossible scoring positions (throw right to the endzone)"],
+  beaten:["Always Hungry (1-in-6 self-eat)","Failed PA test causes deviation — the thrown player can land anywhere","Target must have Right Stuff and not Insignificant"],
+  synergy:["Bullseye","Strong Arm","Right Stuff","Swoop","Lethal Flight"]
+},
+{
+  name:"Timmm-Ber!", cat:"trait", type:"passive",
+  rules:"If this player is ever Knocked Down or Falls Over, this player is placed in the square they were in when they were knocked down or fell over, but also in all adjacent occupied squares. This player is placed Prone in the square they were originally in, and all players in adjacent squares, friend or foe, are Placed Prone and must make an Armour Roll.",
+  analysis:"Timmm-Ber! is the Treeman's falling hazard. When the Treeman goes down, everyone adjacent is also knocked Prone and takes an armour roll. This turns every successful block on the Treeman into a mutual destruction event — and even falling over on a Rush can clear adjacent opponents. The downside is your own players can be hit too. Use Timmm-Ber! Treemen as defensive anchors rather than sitting them near your own key pieces.",
+  beats:["Packed opponent formations around the Treeman (they all take armour rolls when it falls)","Opponents blocking a Treeman — they risk hurting their own players"],
+  beaten:["Your own players adjacent to the Treeman also suffer armour rolls","The Treeman must actually fall — predictable if well protected"],
+  synergy:["Guard (Treeman is valuable adjacent to blocks)","Take Root (Rooted Treeman is hard to knock over)"]
+},
+{
+  name:"Titchy", cat:"trait", type:"passive", compulsory:true,
+  rules:"This player applies a -1 modifier to the dice roll of any player attempting to Dodge into, out of, or through their Tackle Zone. This modifier is applied in addition to any other modifiers. Additionally, this player cannot hold the Offensive or Defensive positions when setting up for a Kick-off.",
+  analysis:"Titchy applies -1 to opponents dodging into, out of, or through your Tackle Zone (not just escaping from it — into it also). Stack Titchy with Prehensile Tail for -2 total. The kick-off restriction prevents Titchy players from lining up on the Line of Scrimmage offensively or defensively. They must be in the wide zones or reserve — a notable placement restriction. A Titchy swarm can create a surprisingly difficult dodge-penalty web.",
+  beats:["Multiple dodge penalties when stacked with other modifiers","Opponents thinking they can easily dodge adjacent to your player"],
+  beaten:["Cannot hold Line of Scrimmage positions on kick-off","Only -1 — not devastating alone"],
+  synergy:["Prehensile Tail","Diving Tackle","Shadowing"]
+},
+{
+  name:"Trickster", cat:"trait", type:"active",
+  rules:"When this player performs a Move Action whilst they are in possession of the ball, they may choose to place the ball on the ground in any square adjacent to this player at any point during their Move Action. This will not cause a Turnover.",
+  analysis:"Trickster is the more powerful version of Fumblerooski — instead of dropping in a square you move out of, Trickster allows placing the ball in any adjacent square at any point during movement, including squares you haven't moved to. This gives broader tactical placement options for setting up teammates. Drop the ball into an occupied square where a teammate can pick it up next turn, or create a decoy trail.",
+  beats:["Fumblerooski limitations (Fumblerooski requires moving out of the square)","Creative ball placement away from threatening opponents"],
+  beaten:["Ball still on the ground — opponent may have access to it","Not causing Turnover means the ball just sits there until someone picks it up"],
+  synergy:["Sure Hands (teammate pick-up reliable)","Give and Go","Fumblerooski"]
+},
+{
+  name:"Unchannelled Fury", cat:"trait", type:"passive", compulsory:true,
+  rules:"Whenever this player is activated, after declaring their action, they must roll a D6. On a 1, this player loses control of their rage and becomes Distracted until the end of this player's next activation. They will move in a randomly determined direction, following all the usual rules for a Move Action, as many squares as their current MA allows. On a 2+, this player may continue their activation as normal.",
+  analysis:"Unchannelled Fury causes a 1-in-6 random movement activation. Unlike Bone Head (which just Distracts in place), Unchannelled Fury causes uncontrolled movement — potentially running into the crowd, into your own players, or toward the opponent's ball carrier. Careful positioning matters: if the random direction sends the player somewhere harmless, the activation loss is the only penalty. But an unlucky random move could clear the path for the opponent.",
+  beats:["Nothing — pure downside"],
+  beaten:["Random movement in the wrong direction can be catastrophic — losing the player off pitch, crashing into teammates, or opening lanes for opponents"],
+  synergy:["Activate last in turn to limit cascade damage","Pro (re-roll on 3+)"]
+},
+{
+  name:"Unsteady", cat:"trait", type:"passive", compulsory:true,
+  rules:"At the end of any turn in which this player declared or was forced to declare a Block Action or a Blitz Action (even if the action was cancelled or failed), this player must roll a D6. On a 1, this player Falls Over and their activation immediately ends, after which an Armour Roll is made against them. This occurs even if the player is not currently activated.",
+  analysis:"Unsteady means rolling a 1 after any Block/Blitz action causes the player to collapse and take an armour roll. This is a self-damage risk on the team's most common actions. Unsteady players should never be used for casual blocks — every block carries a 1-in-6 chance of the player hurting themselves. High-AV Unsteady pieces are less affected (they may crack their own armour less often). Reserve blocks for critical moments.",
+  beats:["Nothing — pure downside"],
+  beaten:["Blocking frequency — each block is a 1-in-6 self-harm chance"],
+  synergy:["High AV (minimises injury from self-fall)","Block (at least if you have to block, do it safely with Block skill)"]
+}
+];
+
+// ── APP LOGIC ──────────────────────────────────────────────────────────────
+
+let activeFilter = 'all';
+let currentModalIdx = -1;  // index into filteredSkillIndices
+let filteredSkillIndices = []; // indices into SKILLS array currently visible
+
+function catClass(c) {
+  const m = {ag:'ag',dev:'dev',gen:'gen',mut:'mut',pas:'pas',str:'str',trait:'trait'};
+  return m[c] || 'gen';
+}
+
+function catLabel(cat) {
+  return {ag:'Agility',dev:'Devious',gen:'General',mut:'Mutation',pas:'Passing',str:'Strength',trait:'Trait'}[cat] || cat;
+}
+
+function chipsHtml(label, arr, cls) {
+  if (!arr || !arr.length) return '';
+  return `<div class="interaction-chips">
+    <span class="chip-label" style="font-size:11px;color:var(--muted);font-style:italic;">${label}:</span>
+    ${arr.map(x=>`<span class="chip chip-${cls}">${x}</span>`).join('')}
+  </div>`;
+}
+
+function skillCardInnerHtml(s, forModal) {
+  const cc = catClass(s.cat);
+  const cl = catLabel(s.cat);
+  return `
+    <div class="card-header hdr-${cc}">
+      <div class="card-header-left">
+        <div class="skill-name">${s.name}${s.compulsory?'&thinsp;<span style="color:#ff8070;font-size:13px;" title="Compulsory">&#10033;</span>':''}</div>
+        <div class="skill-meta">
+          <span class="badge badge-${cc}">${cl}</span>
+          <span class="badge badge-${s.type}">${s.type.charAt(0).toUpperCase()+s.type.slice(1)}</span>
+          ${s.compulsory?'<span class="badge badge-compulsory">Compulsory</span>':''}
+          ${s.special?`<span class="badge" style="background:rgba(80,80,80,0.4);border:1px solid #444;color:#aaa;">${s.special}</span>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="rules-section">
+        <div class="section-label">Rules text (bloodbowlbase.ru)</div>
+        <div class="rules-text">${s.rules}</div>
+      </div>
+      <div class="analysis-section">
+        <div class="section-label">Tactical analysis</div>
+        <div class="analysis-body">${s.analysis}</div>
+      </div>
+      <div class="interactions">
+        <div class="section-label">Interactions</div>
+        ${chipsHtml('Beats / Counters', s.beats, 'beats')}
+        ${chipsHtml('Beaten by', s.beaten, 'beaten')}
+        ${chipsHtml('Synergises with', s.synergy, 'synergy')}
+      </div>
+      ${!forModal ? '<div class="tap-hint">Tap to expand &#8599;</div>' : ''}
+    </div>`;
+}
+
+function buildCards() {
+  const container = document.getElementById('cardContainer');
+  container.innerHTML = '';
+  SKILLS.forEach((s, idx) => {
+    const cc = catClass(s.cat);
+    const cl = catLabel(s.cat);
+    const card = document.createElement('div');
+    card.className = 'skill-card';
+    card.dataset.cat = s.cat;
+    card.dataset.idx = idx;
+    card.dataset.search = (s.name + ' ' + s.rules + ' ' + (s.analysis||'') + ' ' + (s.beats||[]).join(' ') + ' ' + (s.beaten||[]).join(' ') + ' ' + cl).toLowerCase();
+    card.innerHTML = skillCardInnerHtml(s, false);
+
+    // tap / click opens modal
+    card.addEventListener('click', () => openModal(parseInt(card.dataset.idx)));
+    // prevent text-selection-drag from opening modal on desktop
+    card.addEventListener('mousedown', e => { card._mouseDownY = e.clientY; });
+    card.addEventListener('mouseup', e => {
+      if (Math.abs(e.clientY - (card._mouseDownY||0)) > 8) e.stopImmediatePropagation();
+    });
+
+    container.appendChild(card);
+  });
+  updateFilteredIndices();
+  updateCount();
+}
+
+// ── MODAL ──────────────────────────────────────────────────────────────────
+
+function openModal(skillIdx) {
+  // find position in current filtered list
+  const pos = filteredSkillIndices.indexOf(skillIdx);
+  currentModalIdx = pos >= 0 ? pos : 0;
+  renderModal();
+  const overlay = document.getElementById('modalOverlay');
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  currentModalIdx = -1;
+}
+
+function navigateModal(dir) {
+  const newIdx = currentModalIdx + dir;
+  if (newIdx < 0 || newIdx >= filteredSkillIndices.length) return;
+  currentModalIdx = newIdx;
+  renderModal();
+  document.getElementById('modalOverlay').scrollTop = 0;
+}
+
+function renderModal() {
+  const skillIdx = filteredSkillIndices[currentModalIdx];
+  const s = SKILLS[skillIdx];
+  const total = filteredSkillIndices.length;
+
+  document.getElementById('modalCard').innerHTML = skillCardInnerHtml(s, true);
+  document.getElementById('modalSkillCount').textContent = `${currentModalIdx + 1} of ${total}`;
+
+  const prevBtn = document.getElementById('navPrev');
+  const nextBtn = document.getElementById('navNext');
+  prevBtn.disabled = currentModalIdx === 0;
+  nextBtn.disabled = currentModalIdx === total - 1;
+
+  // update labels with adjacent skill names
+  if (currentModalIdx > 0) {
+    prevBtn.textContent = '\u2190 ' + SKILLS[filteredSkillIndices[currentModalIdx - 1]].name;
+  } else {
+    prevBtn.textContent = '\u2190 Previous';
+  }
+  if (currentModalIdx < total - 1) {
+    nextBtn.textContent = SKILLS[filteredSkillIndices[currentModalIdx + 1]].name + ' \u2192';
+  } else {
+    nextBtn.textContent = 'Next \u2192';
+  }
+}
+
+// close modal on overlay background click (not on card itself)
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this || e.target.classList.contains('modal-inner')) closeModal();
+});
+
+// close on Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'ArrowLeft') navigateModal(-1);
+  if (e.key === 'ArrowRight') navigateModal(1);
+});
+
+// swipe gesture support
+let touchStartX = 0;
+document.getElementById('modalOverlay').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+}, {passive: true});
+document.getElementById('modalOverlay').addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 60) navigateModal(dx < 0 ? 1 : -1);
+}, {passive: true});
+
+// ── FILTERING ─────────────────────────────────────────────────────────────
+
+function updateFilteredIndices() {
+  const q = document.getElementById('searchBox').value.toLowerCase().trim();
+  filteredSkillIndices = [];
+  document.querySelectorAll('.skill-card').forEach(card => {
+    const catOk = activeFilter === 'all' || card.dataset.cat === activeFilter;
+    const searchOk = !q || card.dataset.search.includes(q);
+    const show = catOk && searchOk;
+    card.classList.toggle('hidden', !show);
+    if (show) filteredSkillIndices.push(parseInt(card.dataset.idx));
+  });
+  document.getElementById('noResults').style.display = filteredSkillIndices.length === 0 ? 'block' : 'none';
+  updateCount(filteredSkillIndices.length);
+}
+
+function filterCat(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateFilteredIndices();
+}
+
+function applyFilters() {
+  updateFilteredIndices();
+}
+
+function updateCount(n) {
+  const total = SKILLS.length;
+  const showing = n !== undefined ? n : total;
+  document.getElementById('countBar').textContent = showing === total
+    ? `Showing all ${total} Skills & Traits — tap any card to expand`
+    : `Showing ${showing} of ${total} — tap any card to expand`;
+}
+
+document.getElementById('searchBox').addEventListener('input', applyFilters);
+
+buildCards();
+</script>
+</body>
+</html>
